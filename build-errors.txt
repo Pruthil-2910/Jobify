@@ -1,0 +1,1 @@
+src/pages/Auth.tsx(33,13): error TS2353: Object literal may only specify known properties, and 'data' does not exist in type '{ emailRedirectTo?: string | undefined; }'.
