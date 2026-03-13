@@ -1,12 +1,14 @@
-import { useState, useEffect, Component, ReactNode } from 'react';
+import { useState, useEffect, Component } from 'react';
+import type { ReactNode } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Hero from './pages/Hero';
 import Dashboard from './pages/Dashboard';
 import Auth from './pages/Auth';
 import Profile from './pages/Profile';
+import JobDetail from './pages/JobDetail';
 import './index.css';
 import { insforge } from './insforge';
-import type { Session } from '@insforge/sdk';
+
 
 class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean, error: Error | null}> {
   constructor(props: {children: ReactNode}) {
@@ -38,7 +40,8 @@ class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean,
 }
 
 function AppContent() {
-  const [session, setSession] = useState<Session | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [session, setSession] = useState<any>(null);
 
   useEffect(() => {
     insforge.auth.getCurrentSession().then(({ data: { session } }) => {
@@ -92,6 +95,7 @@ function AppContent() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/job/:id" element={<JobDetail />} />
         </Routes>
       </div>
     </Router>
