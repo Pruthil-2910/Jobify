@@ -2,8 +2,8 @@ import { insforge } from '../insforge';
 
 const ADZUNA_APP_ID = import.meta.env.VITE_ADZUNA_APP_ID;
 const ADZUNA_APP_KEY = import.meta.env.VITE_ADZUNA_APP_KEY;
-// Using the Vite proxy to bypass CORS restrictions
-const API_BASE_URL = '/api/adzuna/v1/api/jobs/us/search/1';
+// Using the Vite proxy to bypass CORS restrictions — India endpoint
+const API_BASE_URL = '/api/adzuna/v1/api/jobs/in/search/1';
 
 export interface AdzunaJob {
   id: string;
@@ -33,16 +33,14 @@ const stripHtml = (html: string) => {
 /**
  * Fetches jobs from Adzuna and syncs them to the InsForge jobs_cache table
  */
-export const syncAdzunaJobs = async (searchQuery: string = 'Software Engineer') => {
+export const syncAdzunaJobs = async () => {
   try {
     // Need to pass window.location.origin because API_BASE_URL is a relative path now
     const url = new URL(API_BASE_URL, window.location.origin);
     url.searchParams.append('app_id', ADZUNA_APP_ID);
     url.searchParams.append('app_key', ADZUNA_APP_KEY);
     url.searchParams.append('results_per_page', '50');
-    url.searchParams.append('what', searchQuery);
-    
-    // Using content-type application/json to prevent standard API errors on adzuna
+    // No 'what' filter — fetch all recent Indian jobs
     url.searchParams.append('content-type', 'application/json');
 
     const response = await fetch(url.toString());
@@ -56,11 +54,12 @@ export const syncAdzunaJobs = async (searchQuery: string = 'Software Engineer') 
       adzuna_id: String(job.id),
       title: job.title,
       company: job.company?.display_name || 'Unknown',
-      location: job.location?.display_name || 'Remote',
+      location: job.location?.display_name || 'India',
       description: stripHtml(job.description),
       category: job.category?.label || 'Engineering',
       salary_max: job.salary_max || null,
       redirect_url: job.redirect_url,
+      date_posted: (job as any).created || null,
       last_synced: new Date().toISOString()
     }));
 
