@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" fill="none">
+  <defs>
+    <radialGradient id="lgSat" cx="0.4" cy="0.35" r="0.8">
+      <stop offset="0%" stop-color="#ffe4b5"></stop>
+      <stop offset="45%" stop-color="#e8b166"></stop>
+      <stop offset="85%" stop-color="#a86a2a"></stop>
+      <stop offset="100%" stop-color="#3f2010"></stop>
+    </radialGradient>
+    <linearGradient id="lgRing" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#c9c4f0" stop-opacity="0"></stop>
+      <stop offset="30%" stop-color="#efc58a" stop-opacity="0.9"></stop>
+      <stop offset="70%" stop-color="#efc58a" stop-opacity="0.9"></stop>
+      <stop offset="100%" stop-color="#c9c4f0" stop-opacity="0"></stop>
+    </linearGradient>
+    <filter id="lgGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.8"></feGaussianBlur>
+      <feMerge><feMergeNode></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+    </filter>
+  </defs>
+  
+  <g stroke="#c9c4f0" stroke-opacity="0.35" fill="none" stroke-width="1">
+    <ellipse cx="48" cy="48" rx="40" ry="12" transform="rotate(-18 48 48)"></ellipse>
+    <ellipse cx="48" cy="48" rx="32" ry="9" transform="rotate(-18 48 48)" stroke-opacity="0.6"></ellipse>
+  </g>
+  
+  <g filter="url(#lgGlow)">
+    <circle cx="48" cy="48" r="22" fill="url(#lgSat)"></circle>
+  </g>
+  
+  <ellipse cx="48" cy="48" rx="40" ry="12" transform="rotate(-18 48 48)" fill="none" stroke="url(#lgRing)" stroke-width="3"></ellipse>
+  
+  <circle cx="88" cy="32" r="2.4" fill="#4cc3ff"></circle>
+  <circle cx="88" cy="32" r="2.4" fill="#4cc3ff" opacity="0.5" filter="url(#lgGlow)"></circle>
+
+  
+  <text x="108" y="50" font-family="Instrument Serif, Fraunces, serif" font-size="44" fill="#f5f3ff" letter-spacing="-1">Orbital</text>
+  <text x="108" y="80" font-family="Instrument Serif, Fraunces, serif" font-size="26" font-style="italic" fill="#c9c4f0" letter-spacing="0.5">Morris</text>
+  
+  <circle cx="340" cy="18" r="1" fill="#fff" opacity="0.9"></circle>
+  <circle cx="320" cy="80" r="0.8" fill="#fff" opacity="0.7"></circle>
+</svg>

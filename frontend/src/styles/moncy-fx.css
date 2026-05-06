@@ -1,0 +1,257 @@
+/* ============================================================
+   MONCY-FX — moncy.dev-flavored creative layer over Jobify
+   ============================================================ */
+
+/* High-contrast brutalist pass — stronger surfaces, sharper type accents */
+.moncy-mode .hero-display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.86;
+}
+.moncy-mode .hero-display .ital {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--nebula-cyan);
+}
+.moncy-mode .hero-display .spaced { letter-spacing: 0.08em; font-weight: 400; }
+
+/* Brutalist eyebrow */
+.moncy-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--star-400);
+  padding: 6px 12px; border: var(--border-hair); border-radius: 999px;
+  background: rgba(5,4,13,0.4);
+}
+.moncy-eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--nebula-cyan); box-shadow: 0 0 10px var(--nebula-cyan); animation: pulse-dot 2s ease-in-out infinite; }
+@keyframes pulse-dot { 50% { opacity: 0.4; } }
+
+/* Awwwards-style award marquee */
+.award-marquee {
+  display: flex; overflow: hidden;
+  border-block: var(--border-hair); padding: 18px 0;
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.award-marquee-track {
+  display: flex; gap: 56px; flex-shrink: 0;
+  animation: award-scroll 32s linear infinite;
+}
+.award-item {
+  display: flex; align-items: center; gap: 56px; white-space: nowrap;
+  font-family: var(--font-display); font-style: italic; font-size: 30px;
+  color: var(--star-200); font-weight: 400;
+}
+.award-item .star { color: var(--nebula-cyan); font-size: 18px; font-style: normal; }
+@keyframes award-scroll { to { transform: translateX(-50%); } }
+
+/* Hero 3D canvas stage */
+.hero3d-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 460px;
+  margin-inline: auto;
+}
+.hero3d-canvas { width: 100%; height: 100%; display: block; }
+.hero3d-tag {
+  position: absolute;
+  padding: 5px 10px;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: var(--border-hair); border-radius: 999px;
+  background: rgba(5,4,13,0.7); backdrop-filter: blur(8px);
+  color: var(--star-300);
+  pointer-events: none;
+}
+.hero3d-tag-tl { top: 8%; left: 0; }
+.hero3d-tag-br { bottom: 8%; right: 0; color: var(--nebula-cyan); border-color: rgba(76,195,255,0.35); }
+
+/* Scroll-char split (entrance via IntersectionObserver) */
+.scroll-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(40px);
+  filter: blur(6px);
+  transition: opacity 0.7s cubic-bezier(0.2,0.8,0.2,1),
+              transform 0.7s cubic-bezier(0.2,0.8,0.2,1),
+              filter 0.7s cubic-bezier(0.2,0.8,0.2,1);
+}
+.scroll-char.in { opacity: 1; transform: none; filter: none; }
+@media (prefers-reduced-motion: reduce) {
+  .scroll-char { opacity: 1; transform: none; filter: none; transition: none; }
+}
+
+/* Generic [data-reveal] entrance */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 0.9s cubic-bezier(0.2,0.8,0.2,1),
+              transform 0.9s cubic-bezier(0.2,0.8,0.2,1);
+  will-change: transform, opacity;
+}
+[data-reveal].revealed { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1; transform: none; transition: none; }
+}
+
+/* Magnetic wrap baseline */
+.magnetic-wrap { display: inline-block; will-change: transform; }
+
+/* Jobs page brutalist row layout (bonus list view + cards still work) */
+.jobs-banner {
+  position: relative;
+  border-block: var(--border-hair);
+  padding: 22px 0; margin-bottom: 32px;
+  overflow: hidden;
+}
+.jobs-banner-track {
+  display: flex; gap: 48px;
+  animation: award-scroll 38s linear infinite;
+  font-family: var(--font-display); font-style: italic; font-size: 24px;
+  white-space: nowrap;
+  color: var(--star-300);
+}
+.jobs-banner-track .sep { color: var(--nebula-cyan); }
+
+/* Section number eyebrow */
+.section-num {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--star-400);
+  margin-bottom: 18px;
+}
+.section-num .pill { padding: 3px 9px; border: var(--border-hair); border-radius: 999px; }
+
+/* Hero CTA group with magnetic look */
+.cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+
+/* Brutalist nav-link underline */
+.moncy-mode .nav-link { letter-spacing: 0.04em; }
+
+/* Job card scroll-cascade override (use [data-reveal]) */
+.job-card[data-reveal] { animation: none !important; }
+
+/* ============================================================
+   CUSTOM CURSOR (moncy-style)
+   ============================================================ */
+body.moncy-cursor-on,
+body.moncy-cursor-on a,
+body.moncy-cursor-on button,
+body.moncy-cursor-on input,
+body.moncy-cursor-on textarea,
+body.moncy-cursor-on .job-card,
+body.moncy-cursor-on .tag-chip,
+body.moncy-cursor-on .nav-link,
+body.moncy-cursor-on [data-cursor] {
+  cursor: none;
+}
+body.moncy-cursor-on input,
+body.moncy-cursor-on textarea { cursor: text; }
+
+.moncy-cursor-dot {
+  position: fixed; top: 0; left: 0; width: 10px; height: 10px;
+  border-radius: 50%; background: #ffffff;
+  pointer-events: none; z-index: 9999;
+  mix-blend-mode: difference;
+  transform: translate(-50%, -50%);
+  transition: width 0.22s cubic-bezier(0.2,0.8,0.2,1),
+              height 0.22s cubic-bezier(0.2,0.8,0.2,1),
+              background-color 0.22s cubic-bezier(0.2,0.8,0.2,1),
+              opacity 0.2s;
+}
+.moncy-cursor-dot.cursor-hover {
+  width: 56px; height: 56px;
+  background: #ffffff;
+}
+.moncy-cursor-trail {
+  position: fixed; top: 0; left: 0; width: 38px; height: 38px;
+  border: 1px solid rgba(245,245,240,0.45);
+  border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%, -50%);
+}
+.moncy-cursor-label {
+  position: fixed; top: 0; left: 0;
+  pointer-events: none; z-index: 10000;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ffffff;
+  padding: 6px 10px; border-radius: 999px;
+  background: rgba(20,30,80,0.85);
+  backdrop-filter: blur(6px);
+  transform: translate(20px, 20px) scale(0.85);
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.25s cubic-bezier(0.2,0.8,0.2,1);
+}
+.moncy-cursor-label.show { opacity: 1; transform: translate(20px, 20px) scale(1); }
+
+@media (prefers-reduced-motion: reduce), (pointer: coarse) {
+  .moncy-cursor-dot, .moncy-cursor-trail, .moncy-cursor-label { display: none !important; }
+  body.moncy-cursor-on, body.moncy-cursor-on * { cursor: auto !important; }
+}
+
+/* ============================================================
+   TEXT-MAGNETIC (per-char hover scale)
+   ============================================================ */
+.text-magnetic .tm-char {
+  display: inline-block;
+  transition: transform 0.45s cubic-bezier(0.2,0.8,0.2,1),
+              color 0.4s cubic-bezier(0.2,0.8,0.2,1),
+              letter-spacing 0.4s cubic-bezier(0.2,0.8,0.2,1);
+  will-change: transform;
+}
+.text-magnetic:hover .tm-char {
+  color: var(--star-100);
+}
+.text-magnetic.text-magnetic-on .tm-char {
+  animation: tm-wave 0.9s cubic-bezier(0.2,0.8,0.2,1) both;
+  animation-delay: calc(var(--i, 0) * 0.025s);
+}
+.text-magnetic .tm-char:hover {
+  transform: scale(1.35) translateY(-4px);
+  color: #ffffff;
+}
+@keyframes tm-wave {
+  0%   { transform: translateY(0) scale(1); }
+  35%  { transform: translateY(-10px) scale(1.18); }
+  100% { transform: translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .text-magnetic .tm-char { transition: none; }
+  .text-magnetic .tm-char:hover { transform: none; }
+}
+
+/* Generic hover-lift utility for cards (works with cursor) */
+.hover-lift { transition: transform 0.5s cubic-bezier(0.2,0.8,0.2,1), border-color 0.4s; }
+.hover-lift:hover { transform: translateY(-6px) scale(1.01); }
+
+/* SplitText chars get hover-grow too (so SplitText + magnetic compose) */
+.split-char {
+  transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1),
+              color 0.3s cubic-bezier(0.2,0.8,0.2,1);
+}
+.split-char:hover {
+  transform: scale(1.4) translateY(-6px) !important;
+  color: #ffffff !important;
+  z-index: 2;
+  position: relative;
+}
+.scroll-char {
+  transition-property: opacity, transform, filter, color;
+}
+.scroll-char.in:hover {
+  transform: scale(1.4) translateY(-6px) !important;
+  color: #ffffff !important;
+  filter: none !important;
+  z-index: 2;
+  position: relative;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .hero3d-stage { max-width: 320px; }
+  .award-item { font-size: 22px; gap: 36px; }
+  .jobs-banner-track { font-size: 18px; gap: 32px; }
+  .split-char:hover, .scroll-char.in:hover { transform: none !important; }
+}

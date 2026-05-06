@@ -1,0 +1,211 @@
+/* ============================================================
+   ORBITAL MORRIS — Colors & Typography
+   Deep-space astrophysics aesthetic for a Nine Men's Morris game.
+   ============================================================ */
+
+/* ---------- Fonts ---------- */
+/* Display: Fraunces substituted → Instrument Serif (Google Fonts)
+   — wide, slightly condensed modern serif with astronomical feel.
+   UI:      Inter (Google Fonts) — neutral, high legibility.
+   Mono:    JetBrains Mono (Google Fonts) — telemetry/stat readouts.
+   NOTE: served from Google Fonts CDN. If offline bundling is required,
+         swap to the matching .woff2 files in /fonts. */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  /* ============ CORE PALETTE ============ */
+  /* Void — primary backgrounds (deepest space) */
+  --void-900: #05040d;          /* true black-violet, behind nebula */
+  --void-800: #0a0818;          /* panel base */
+  --void-700: #12102a;          /* raised surface */
+  --void-600: #1c1940;          /* hover surface */
+
+  /* Nebula — accent/brand (hero backgrounds, glows) */
+  --nebula-violet:  #5b3bd4;    /* deep indigo-violet core */
+  --nebula-magenta: #a238c9;    /* magenta cloud */
+  --nebula-cyan:    #4cc3ff;    /* ionized cyan edge */
+  --nebula-rose:    #ff6fae;    /* hot pink wisp */
+
+  /* Stellar — foregrounds / luminescence */
+  --star-100: #ffffff;          /* brightest star / hot text */
+  --star-200: #f5f3ff;          /* primary fg */
+  --star-300: #c9c4f0;          /* secondary fg */
+  --star-400: #8e88b8;          /* tertiary fg / muted */
+  --star-500: #5b567f;          /* disabled / hint */
+  --star-600: #32304d;          /* divider on dark */
+
+  /* Player Pieces */
+  --moon-core:    #f2edff;      /* silvery white core */
+  --moon-crater:  #bdb6d6;      /* crater shadow */
+  --moon-glow:    #c0d4ff;      /* cool halo */
+
+  --jupiter-band-1: #d97434;    /* orange band */
+  --jupiter-band-2: #a63a1e;    /* deep red band */
+  --jupiter-band-3: #efb879;    /* cream band */
+  --jupiter-band-4: #5a2711;    /* brown band */
+  --jupiter-glow:   #ffb070;    /* warm halo */
+
+  /* Board */
+  --orbit-line:      rgba(201, 196, 240, 0.35);   /* resting orbital path */
+  --orbit-line-hot:  rgba(255, 255, 255, 0.85);   /* active/mill path */
+  --node-ring:       rgba(201, 196, 240, 0.55);   /* empty node ring */
+  --node-ring-hover: rgba(255, 255, 255, 0.95);
+
+  /* Semantic */
+  --success: #3ddc97;           /* stable orbit green */
+  --warning: #ffb547;           /* solar flare */
+  --danger:  #ff5577;           /* red-shift / capture */
+  --info:    var(--nebula-cyan);
+
+  /* ============ TYPOGRAPHY ============ */
+  --font-display: 'Instrument Serif', 'Fraunces', Cambria, serif;
+  --font-ui:      'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  /* Scale (1920 reference — also works at 1280) */
+  --fs-hero:    96px;   /* big display — splash, win screen */
+  --fs-h1:      56px;
+  --fs-h2:      40px;
+  --fs-h3:      28px;
+  --fs-title:   20px;   /* panel titles */
+  --fs-body:    16px;
+  --fs-small:   14px;
+  --fs-caption: 12px;
+  --fs-tag:     11px;   /* uppercase eyebrow */
+
+  --lh-tight: 1.05;
+  --lh-snug:  1.2;
+  --lh-body:  1.55;
+
+  --ls-display: -0.02em;  /* tighten serif display */
+  --ls-tag:     0.22em;   /* wide eyebrow */
+
+  /* ============ SPACING ============ */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+
+  /* ============ RADII ============ */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* ============ BORDERS ============ */
+  --border-hair:   1px solid rgba(201, 196, 240, 0.12);
+  --border-thin:   1px solid rgba(201, 196, 240, 0.22);
+  --border-bright: 1px solid rgba(255, 255, 255, 0.45);
+
+  /* ============ SHADOWS / GLOWS ============ */
+  /* Outer elevation (subtle, always cool-toned for vacuum feel) */
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.5);
+  --shadow-md:  0 8px 24px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.4);
+  --shadow-lg:  0 24px 60px rgba(5,4,13,0.7), 0 4px 12px rgba(0,0,0,0.5);
+
+  /* Inner depth (embedded panels) */
+  --inset-panel: inset 0 1px 0 rgba(255,255,255,0.05),
+                 inset 0 0 0 1px rgba(201,196,240,0.08);
+
+  /* Glows — the signature effect */
+  --glow-moon:    0 0 18px rgba(192, 212, 255, 0.55), 0 0 36px rgba(192, 212, 255, 0.25);
+  --glow-jupiter: 0 0 18px rgba(255, 176, 112, 0.6),  0 0 36px rgba(217, 116, 52, 0.3);
+  --glow-pulsar:  0 0 6px #fff, 0 0 20px #fff, 0 0 44px rgba(76, 195, 255, 0.9);
+  --glow-mill:    0 0 24px rgba(255, 255, 255, 0.9), 0 0 60px rgba(76, 195, 255, 0.7);
+  --glow-danger:  0 0 20px rgba(255, 85, 119, 0.6);
+
+  /* ============ MOTION ============ */
+  --ease-orbit:  cubic-bezier(0.2, 0.8, 0.2, 1);    /* graceful, slightly lagging */
+  --ease-snap:   cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-gravity:cubic-bezier(0.7, 0, 0.84, 0);     /* for black hole pull-in */
+
+  --dur-instant: 120ms;
+  --dur-quick:   220ms;
+  --dur-base:    360ms;
+  --dur-slow:    640ms;
+  --dur-epic:    1200ms;
+
+  /* ============ BACKDROPS ============ */
+  --backdrop-blur: blur(18px) saturate(140%);
+}
+
+/* ============================================================
+   SEMANTIC ELEMENT STYLES
+   ============================================================ */
+html, body {
+  background: var(--void-900);
+  color: var(--star-200);
+  font-family: var(--font-ui);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, .h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-display);
+  font-weight: 400;
+  color: var(--star-100);
+}
+h2, .h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-display);
+  font-weight: 400;
+  color: var(--star-100);
+}
+h3, .h3 {
+  font-family: var(--font-ui);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-snug);
+  font-weight: 500;
+  color: var(--star-100);
+}
+.display-hero {
+  font-family: var(--font-display);
+  font-size: var(--fs-hero);
+  line-height: 0.95;
+  letter-spacing: var(--ls-display);
+  font-weight: 400;
+}
+.eyebrow, .tag {
+  font-family: var(--font-ui);
+  font-size: var(--fs-tag);
+  letter-spacing: var(--ls-tag);
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--star-400);
+}
+p { color: var(--star-300); }
+code, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  color: var(--nebula-cyan);
+}
+a {
+  color: var(--nebula-cyan);
+  text-decoration: none;
+  transition: color var(--dur-quick) var(--ease-orbit);
+}
+a:hover { color: var(--star-100); text-shadow: 0 0 12px rgba(76,195,255,0.8); }
+
+hr { border: 0; border-top: var(--border-hair); margin: var(--space-5) 0; }
+
+/* Utility: a reusable nebula background */
+.bg-nebula {
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 25%, rgba(162, 56, 201, 0.35) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 45% at 80% 70%, rgba(91, 59, 212, 0.45) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 35% at 60% 20%, rgba(76, 195, 255, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 30% 80%, rgba(255, 111, 174, 0.12) 0%, transparent 60%),
+    linear-gradient(180deg, #05040d 0%, #0a0818 60%, #05040d 100%);
+}
