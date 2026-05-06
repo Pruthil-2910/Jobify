@@ -1,4 +1,4 @@
-// API client — Connects frontend to jobify_backend (FastAPI)
+// API client — Connects frontend to backend (FastAPI)
 // In dev, Vite proxies these paths to http://localhost:8000 (see vite.config.js).
 // Override at runtime with: window.JOBIFY_API_BASE = 'https://...'
 

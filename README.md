@@ -26,7 +26,7 @@ instead of an in-process scheduler).
 ```
 ┌──────────────────────────────┬──────────────────────────────┐
 │         FRONTEND             │           BACKEND            │
-│       (frontend/)            │       (jobify_backend/)      │
+│       (frontend/)            │       (backend/)      │
 │                              │                              │
 │  React 18 + Vite             │  FastAPI + Uvicorn           │
 │  ES module imports           │  SQLite + sqlite-vec (768d)  │
@@ -40,7 +40,7 @@ instead of an in-process scheduler).
 | Layer        | Directory          | Runtime          | Default port |
 |--------------|--------------------|------------------|--------------|
 | **Frontend** | `frontend/`        | Node 18+ / Vite  | 5173         |
-| **Backend**  | `jobify_backend/`  | Python 3.11–3.14 | 8000         |
+| **Backend**  | `backend/`  | Python 3.11–3.14 | 8000         |
 
 The frontend's Vite dev server proxies `/auth`, `/users`, `/jobs`, `/chat`, `/jd`, `/projects`, `/health` to the backend, so they speak the same origin and CORS is a non-issue in dev.
 
@@ -64,7 +64,7 @@ Jobify platform/
 │   │   └── styles/                 # tokens.css, app.css, moncy-fx.css
 │   └── assets/                     # logo SVGs
 │
-├── jobify_backend/
+├── backend/
 │   ├── main.py                     # FastAPI factory + lifespan
 │   ├── config.py                   # pydantic-settings
 │   ├── requirements.txt
@@ -174,7 +174,7 @@ You'll need **two terminals** — one for backend, one for frontend.
 ### Terminal 1 — Backend
 
 ```bash
-cd jobify_backend
+cd backend
 
 # 1. Create + activate venv
 python -m venv .venv
@@ -231,7 +231,7 @@ Open **http://localhost:5173** in your browser. Vite will hot-reload on edits an
 cd frontend && npm run build && npm run preview
 
 # Backend (no build step — just run with multiple workers behind a reverse proxy)
-cd jobify_backend && uvicorn main:app --workers 1 --host 0.0.0.0 --port 8000
+cd backend && uvicorn main:app --workers 1 --host 0.0.0.0 --port 8000
 ```
 
 Keep `--workers 1` for the backend: SQLite is single-writer.
@@ -241,7 +241,7 @@ Keep `--workers 1` for the backend: SQLite is single-writer.
 ## Tests
 
 ```bash
-cd jobify_backend
+cd backend
 .venv\Scripts\activate
 pytest tests/ -v
 ```
