@@ -1,0 +1,35 @@
+# Jobify backend dependencies
+# Versions use >= ranges so pip picks pre-built wheels for your Python version
+# (3.11 / 3.12 / 3.13 / 3.14). Tested with Python 3.11 and 3.14 on Windows.
+
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+
+# pydantic 2.10+ ships pre-built pydantic-core wheels for Python 3.14 on Windows.
+# Older 2.9.x has no 3.14 wheel and would try to compile Rust → MSVC required.
+pydantic>=2.10.0
+pydantic-settings>=2.7.0
+
+# Auth — using bcrypt directly (passlib's CryptContext is broken on bcrypt 4 + Py 3.14).
+python-jose[cryptography]>=3.3.0
+bcrypt>=4.2.0
+cryptography>=44.0.0
+
+# Vector + HTTP + retries
+sqlite-vec>=0.1.6
+httpx>=0.27.0
+tenacity>=9.0.0
+
+# LangGraph + Gemini (modern SDK; `google-generativeai` is deprecated)
+langgraph>=0.2.45
+langchain-google-genai>=2.0.4
+google-genai>=1.0.0
+
+# Misc
+python-multipart>=0.0.17
+beautifulsoup4>=4.12.3
+email-validator>=2.2.0
+
+# Tests
+pytest>=8.3.3
+pytest-asyncio>=0.24.0
