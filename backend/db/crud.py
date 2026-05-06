@@ -390,6 +390,91 @@ def vec_search_jobs(
     return _rows_to_dicts(cur.fetchall())
 
 
+def get_user_embedding(
+    conn: sqlite3.Connection, user_id: int
+) -> Optional[List[float]]:
+    """Return the user's stored resume embedding (768 floats), or None."""
+    conn.row_factory = sqlite3.Row
+    cur = conn.execute(
+        "SELECT embedding FROM vec_users WHERE user_id = ?", (user_id,)
+    )
+    row = cur.fetchone()
+    if row is None:
+        return None
+    raw = row["embedding"]
+    # sqlite-vec returns BLOB; convert to list[float].
+    try:
+        if isinstance(raw, (bytes, bytearray)):
+            import struct
+
+            n = len(raw) // 4
+            return list(struct.unpack(f"{n}f", raw))
+        if isinstance(raw, str):
+            return list(json.loads(raw))
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Failed to decode user embedding: %s", exc)
+    return None
+
+
+def match_jobs_for_user(
+    conn: sqlite3.Connection,
+    user_id: int,
+    *,
+    limit: int = 20,
+    country: Optional[str] = None,
+    location: Optional[str] = None,
+    posted_since: Optional[str] = None,
+    category: Optional[str] = None,
+) -> List[Dict[str, Any]]:
+    """Rank jobs by cosine similarity to the user's resume embedding.
+
+    Returns rows with ``distance`` (raw 0..1+ from sqlite-vec) and
+    ``match_pct`` (int 0..100). Falls back to empty list if user has no
+    embedding yet — caller should fall back to plain search_jobs.
+    """
+    user_vec = get_user_embedding(conn, user_id)
+    if user_vec is None:
+        return []
+    payload = json.dumps(user_vec)
+
+    clauses: List[str] = []
+    params: List[Any] = [payload]
+    if country:
+        clauses.append("j.country = ?")
+        params.append(country.lower())
+    if location:
+        clauses.append("j.location LIKE ?")
+        params.append(f"%{location}%")
+    if posted_since:
+        clauses.append("j.posted_at >= ?")
+        params.append(posted_since)
+    if category:
+        clauses.append("j.category LIKE ?")
+        params.append(f"%{category}%")
+    where = ("WHERE " + " AND ".join(clauses)) if clauses else ""
+
+    sql = f"""
+        SELECT j.*, vec_distance_cosine(v.embedding, ?) AS distance
+        FROM vec_jobs v
+        JOIN jobs j ON j.id = v.job_id
+        {where}
+        ORDER BY distance ASC
+        LIMIT ?
+    """
+    params.append(int(limit))
+    conn.row_factory = sqlite3.Row
+    cur = conn.execute(sql, params)
+    rows = _rows_to_dicts(cur.fetchall())
+    for r in rows:
+        d = r.get("distance")
+        if d is None:
+            r["match_pct"] = 0
+        else:
+            # cosine distance ∈ [0, 2]; normalized embeddings give ~[0, 1]
+            r["match_pct"] = max(0, min(100, int(round((1.0 - float(d)) * 100))))
+    return rows
+
+
 def vec_search_projects(
     conn: sqlite3.Connection,
     user_id: int,

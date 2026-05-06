@@ -242,8 +242,21 @@ def _seconds_until(target_hour: int, target_minute: int) -> float:
 
 
 async def _scheduler_loop(country: str, hour: int, minute: int) -> None:
-    logger.info("daily-refresh scheduler started — country=%s firing at %02d:%02d local", country, hour, minute)
-    # Optional kickoff: seed if DB looks empty.
+    """Initial seed (last 60 days, if empty) + daily refresh at HH:MM local."""
+    try:
+        from config import settings
+        seed_target = settings.JOB_SEED_TARGET
+        seed_days = settings.JOB_SEED_MAX_DAYS_OLD
+        refresh_days = settings.JOB_REFRESH_DAYS
+    except Exception:  # noqa: BLE001
+        seed_target, seed_days, refresh_days = 5000, 60, 1
+
+    logger.info(
+        "scheduler started country=%s fires=%02d:%02d seed_target=%d seed_days=%d refresh_days=%d",
+        country, hour, minute, seed_target, seed_days, refresh_days,
+    )
+
+    # Optional kickoff: seed if DB looks empty for this country.
     try:
         conn = get_connection()
         try:
@@ -251,11 +264,21 @@ async def _scheduler_loop(country: str, hour: int, minute: int) -> None:
         finally:
             conn.close()
         if total == 0:
-            logger.info("scheduler: jobs table empty for country=%s — running initial seed (target 5000)", country)
+            logger.info(
+                "scheduler: jobs[%s] empty — initial seed target=%d days=%d",
+                country, seed_target, seed_days,
+            )
             try:
-                await ingest_country(country=country, target_count=5000, embed=False)
+                await ingest_country(
+                    country=country,
+                    target_count=seed_target,
+                    max_days_old=seed_days,
+                    embed=False,
+                )
             except Exception:  # noqa: BLE001
                 logger.exception("initial seed failed (will retry tomorrow)")
+        else:
+            logger.info("scheduler: jobs[%s] already has %d rows — skipping seed", country, total)
     except Exception:  # noqa: BLE001
         logger.exception("scheduler kickoff check failed")
 
@@ -268,7 +291,7 @@ async def _scheduler_loop(country: str, hour: int, minute: int) -> None:
             logger.info("scheduler cancelled")
             raise
         try:
-            await daily_refresh(country=country)
+            await daily_refresh(country=country, days=refresh_days)
         except Exception:  # noqa: BLE001
             logger.exception("daily_refresh failed (will retry tomorrow)")
 

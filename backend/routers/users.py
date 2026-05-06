@@ -1,8 +1,9 @@
 """User account routes: profile retrieval and resume management."""
 from __future__ import annotations
 
+import json
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, Depends, Request
 
@@ -63,6 +64,22 @@ async def get_me(
         has_api_key=has_api_key,
         created_at=current_user["created_at"],
     )
+
+
+@router.get("/resume")
+async def get_resume(
+    current_user: Dict[str, Any] = Depends(get_current_user),
+) -> Optional[dict]:
+    """Return the user's stored resume JSON, or null if none saved yet."""
+    raw = current_user.get("resume_json")
+    if not raw:
+        return None
+    if isinstance(raw, str):
+        try:
+            return json.loads(raw)
+        except Exception:
+            return None
+    return raw
 
 
 @router.put("/resume", response_model=Resume)

@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from auth.dependencies import get_current_user, get_db_dep
 from db.crud import (
     get_job_by_id,
+    match_jobs_for_user,
     search_jobs,
     upsert_job,
     upsert_vec_embedding,
@@ -60,6 +61,40 @@ async def search(
         current_user.get("id"), q, location, country, category, len(rows),
     )
     return [JobResponse.model_validate(r) for r in rows]
+
+
+@router.get("/match-feed")
+async def match_feed(
+    limit: int = Query(20, ge=1, le=100),
+    country: Optional[str] = Query(None),
+    location: Optional[str] = Query(None),
+    posted_since: Optional[str] = Query(None, description="ISO date, e.g. '2026-03-06'."),
+    category: Optional[str] = Query(None),
+    current_user: Dict[str, Any] = Depends(get_current_user),
+    conn: Any = Depends(get_db_dep),
+) -> dict:
+    """Personalised job feed ranked by cosine similarity to the user's resume.
+
+    Each row carries a ``match_pct`` (0..100) computed from the cosine
+    distance between the user's resume embedding and the job's embedding.
+    If the user has no resume embedding yet (no Gemini key was set when
+    /users/resume was called), ``match_pct`` will be absent and the rows
+    fall back to recency-ordered ``search_jobs``.
+    """
+    user_id = current_user["id"]
+    rows = match_jobs_for_user(
+        conn, user_id, limit=limit,
+        country=country, location=location,
+        posted_since=posted_since, category=category,
+    )
+    if not rows:
+        # Fallback: no embedding for this user yet — return plain search.
+        rows = search_jobs(
+            conn, q=None, location=location, limit=limit, offset=0,
+            country=country, posted_since=posted_since, category=category,
+        )
+        return {"personalised": False, "results": rows}
+    return {"personalised": True, "results": rows}
 
 
 @router.get("/{job_id}", response_model=JobResponse)

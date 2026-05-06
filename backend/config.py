@@ -43,7 +43,9 @@ class Settings(BaseSettings):
     JOB_SCHEDULER_COUNTRY: str = "in"   # ISO-2 (in / us / gb / de ...)
     JOB_SCHEDULER_HOUR: int = 2         # 24h local time
     JOB_SCHEDULER_MINUTE: int = 0
-    JOB_SEED_TARGET: int = 5000         # initial seed size if jobs table is empty
+    JOB_SEED_TARGET: int = 5000         # max jobs to pull on initial seed
+    JOB_SEED_MAX_DAYS_OLD: int = 60     # only seed jobs from the last N days
+    JOB_REFRESH_DAYS: int = 1           # daily refresh window (last N days)
 
 
 @lru_cache(maxsize=1)

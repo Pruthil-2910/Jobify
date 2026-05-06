@@ -2,9 +2,10 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
+from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
+from pydantic import BaseModel, Field
 
 from auth.dependencies import get_current_user, get_db_dep
 from db.crud import (
@@ -20,6 +21,14 @@ from services.embedding import (
     embed_document,
 )
 from services.github import LinkedInBlockedError, ingest_url
+
+
+class ManualProjectRequest(BaseModel):
+    """Body for adding a project the user typed by hand (no URL fetch)."""
+    title: str = Field(..., min_length=2)
+    description: str = Field(..., min_length=10)
+    technologies: list[str] = Field(default_factory=list)
+    url: Optional[str] = None
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +109,40 @@ async def ingest_projects(
         logger.info("Ingested project_id=%s for user_id=%s", project_id, user_id)
 
     return ProjectIngestResponse(ingested=len(ingested), failed=failed)
+
+
+@router.post("/manual")
+async def add_manual_project(
+    payload: ManualProjectRequest,
+    request: Request,
+    current_user: dict = Depends(get_current_user),
+    conn=Depends(get_db_dep),
+) -> dict:
+    """Add a project the user typed in (no URL needed). Embeds with their key."""
+    user_id = current_user["id"] if isinstance(current_user, dict) else current_user.id
+    text = f"{payload.title}\n\n{payload.description}"
+    if payload.technologies:
+        text += "\n\nTech: " + ", ".join(payload.technologies)
+
+    project_id = create_project(
+        conn, user_id, source_url=payload.url or "(manual)", project_text=text,
+    )
+
+    gemini_key = getattr(request.state, "gemini_key", None)
+    embedded = False
+    if gemini_key:
+        try:
+            vec = await embed_document(text, gemini_key)
+            upsert_vec_embedding(conn, "vec_projects", project_id, vec)
+            embedded = True
+        except InvalidAPIKeyError as exc:
+            raise HTTPException(401, detail="invalid_gemini_key") from exc
+        except RateLimitError as exc:
+            raise HTTPException(429, detail="rate_limit") from exc
+        except Exception:  # noqa: BLE001
+            logger.exception("manual project embed failed id=%s", project_id)
+    logger.info("manual project added id=%s user_id=%s embedded=%s", project_id, user_id, embedded)
+    return {"id": project_id, "embedded": embedded, "title": payload.title}
 
 
 @router.get("", response_model=list[dict])
