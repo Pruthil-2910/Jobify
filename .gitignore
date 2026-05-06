@@ -1,0 +1,55 @@
+# --- Secrets / environment ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Databases (local only — schema lives in db/schema.py) ---
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# --- Node / frontend build output ---
+node_modules/
+dist/
+.vite/
+*.local
+
+# --- Editor / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# --- Tooling artefacts (Claude Code, claude-flow, graphify) ---
+.claude/
+.claude-flow/
+.swarm/
+.mcp.json
+graphify-out/
+.graphify_*
+.needs_update
+
+# --- Uploads (runtime user data) ---
+uploads/
+
+# --- Tests / smoke output ---
+smoke.db*
+jobify.db*
