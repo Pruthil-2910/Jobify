@@ -12,29 +12,45 @@ const Jobs = ({ setRoute, setSelectedJob }) => {
   const [loading, setLoading] = React.useState(false);
   useScrollReveal();
 
+  const [personalised, setPersonalised] = React.useState(false);
+
   React.useEffect(() => {
     let cancelled = false;
     (async () => {
       if (!AuthAPI.isLoggedIn()) return;
       setLoading(true);
       try {
-        const data = await JobsAPI.search({ limit: 50 });
+        // Try personalised feed first — falls back server-side if user has no embedding.
+        let data, isPersonalised = false;
+        try {
+          const feed = await JobsAPI.matchFeed({ limit: 50, country: 'in' });
+          data = feed.results || [];
+          isPersonalised = !!feed.personalised;
+        } catch {
+          data = await JobsAPI.search({ limit: 50, country: 'in' });
+        }
+
         if (!cancelled && data && data.length > 0) {
           const mapped = data.map((j) => ({
             id: j.id,
             title: j.title,
             company: j.company || 'Unknown',
             location: j.location || 'Remote',
-            salary: j.salary_min && j.salary_max ? `$${Math.round(j.salary_min / 1000)}k–$${Math.round(j.salary_max / 1000)}k` : 'Competitive',
-            match: Math.floor(60 + Math.random() * 35),
-            tags: j.description ? j.description.split(/\s+/).slice(0, 3) : [],
-            time: timeAgo(j.fetched_at),
+            salary: j.salary_min && j.salary_max
+              ? `₹${Math.round(j.salary_min / 100000)}L–₹${Math.round(j.salary_max / 100000)}L`
+              : 'Competitive',
+            // Real cosine-similarity %, or null if not personalised.
+            match: typeof j.match_pct === 'number' ? j.match_pct : null,
+            tags: j.category ? [j.category] : (j.description ? j.description.split(/\s+/).slice(0, 3) : []),
+            time: timeAgo(j.posted_at || j.fetched_at),
             logo: (j.company || 'XX').slice(0, 2).toUpperCase(),
             description: j.description,
             external_id: j.external_id,
+            redirect_url: j.redirect_url,
           }));
           setJobs(mapped);
           setIsLive(true);
+          setPersonalised(isPersonalised);
         }
       } catch {} finally { if (!cancelled) setLoading(false); }
     })();
@@ -42,7 +58,7 @@ const Jobs = ({ setRoute, setSelectedJob }) => {
   }, []);
 
   const filtered = jobs.filter(j => {
-    if (filter === 'high' && j.match < 80) return false;
+    if (filter === 'high' && (j.match == null || j.match < 80)) return false;
     if (filter === 'remote' && !j.location.toLowerCase().includes('remote')) return false;
     if (query && !j.title.toLowerCase().includes(query.toLowerCase()) && !j.company.toLowerCase().includes(query.toLowerCase())) return false;
     return true;
@@ -54,6 +70,16 @@ const Jobs = ({ setRoute, setSelectedJob }) => {
         <div>
           <div className="section-num">
             <span className="pill">{isLive ? 'LIVE' : 'FEED'}</span> {filtered.length} ROLES IN ORBIT
+            {personalised && (
+              <span className="pill" style={{ marginLeft: 8, background: 'rgba(76,195,127,0.18)', color: '#4cc37f' }}>
+                AI-MATCHED
+              </span>
+            )}
+            {!personalised && isLive && (
+              <span style={{ marginLeft: 8, fontSize: 11, color: 'var(--star-400)' }}>
+                set Gemini key + save resume to enable AI ranking
+              </span>
+            )}
             {loading && <span style={{ marginLeft: 8, fontSize: 11, color: 'var(--star-400)' }}>loading…</span>}
           </div>
           <h1 className="hero-display" style={{ fontSize: 'clamp(48px, 7vw, 88px)', margin: 0 }}>
@@ -121,7 +147,9 @@ const Jobs = ({ setRoute, setSelectedJob }) => {
                   <div style={{ fontSize: 13, color: 'var(--star-400)' }}>{j.company}</div>
                 </div>
               </div>
-              <MatchRing pct={j.match} />
+              {typeof j.match === 'number'
+                ? <MatchRing pct={j.match} />
+                : <span style={{ fontSize: 10, color: 'var(--star-400)', fontFamily: 'var(--font-mono)' }}>—</span>}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 16 }}>
               {j.tags.map(t => <span key={t} className="tag-chip">{t}</span>)}

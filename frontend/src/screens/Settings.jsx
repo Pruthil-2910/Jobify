@@ -11,6 +11,11 @@ const Settings = ({ setRoute }) => {
   const [ingestBusy, setIngestBusy] = React.useState(false);
   const [projects, setProjects]   = React.useState([]);
 
+  // Manual project form
+  const [manual, setManual] = React.useState({ title: '', description: '', technologies: '' });
+  const [manualMsg, setManualMsg] = React.useState('');
+  const [manualBusy, setManualBusy] = React.useState(false);
+
   React.useEffect(() => {
     if (!AuthAPI.isLoggedIn()) { setRoute('login'); return; }
     ProjectsAPI.list().then(setProjects).catch(() => {});
@@ -44,6 +49,28 @@ const Settings = ({ setRoute }) => {
 
   const removeProject = async (id) => {
     try { await ProjectsAPI.remove(id); setProjects(p => p.filter(x => x.id !== id)); } catch {}
+  };
+
+  const addManual = async () => {
+    if (!manual.title.trim() || manual.description.trim().length < 10) {
+      setManualMsg('✗ Title required, description at least 10 chars');
+      return;
+    }
+    setManualBusy(true); setManualMsg('');
+    try {
+      const techs = manual.technologies
+        .split(',').map(s => s.trim()).filter(Boolean);
+      const r = await ProjectsAPI.addManual({
+        title: manual.title.trim(),
+        description: manual.description.trim(),
+        technologies: techs,
+      });
+      setManualMsg(r.embedded ? '✓ Added & embedded' : '✓ Added (no embedding — set Gemini key for AI matching)');
+      setManual({ title: '', description: '', technologies: '' });
+      ProjectsAPI.list().then(setProjects).catch(() => {});
+    } catch (e) {
+      setManualMsg(`✗ ${e.message || 'Failed to add'}`);
+    } finally { setManualBusy(false); }
   };
 
   return (
@@ -94,6 +121,32 @@ const Settings = ({ setRoute }) => {
             ))}
           </div>
         )}
+      </div>
+
+      <div className="panel" style={{ padding: 28, marginBottom: 24 }}>
+        <h3 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: 22, fontWeight: 400 }}>Add a project manually</h3>
+        <p style={{ marginTop: 6, fontSize: 13, color: 'var(--star-400)' }}>
+          Type a project that doesn't have a public URL. It gets embedded the same way ingested ones do.
+        </p>
+        <input className="input" placeholder="Project title"
+          value={manual.title}
+          onChange={e => setManual({ ...manual, title: e.target.value })}
+          style={{ marginTop: 12 }} />
+        <textarea className="input textarea" rows={4}
+          placeholder="What did you build? What problem did it solve? Specifics &amp; outcomes work best."
+          value={manual.description}
+          onChange={e => setManual({ ...manual, description: e.target.value })}
+          style={{ marginTop: 8 }} />
+        <input className="input" placeholder="Technologies (comma-separated, e.g. React, FastAPI, Postgres)"
+          value={manual.technologies}
+          onChange={e => setManual({ ...manual, technologies: e.target.value })}
+          style={{ marginTop: 8 }} />
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginTop: 12 }}>
+          <button className="btn btn-primary" onClick={addManual} disabled={manualBusy || !manual.title.trim()}>
+            {manualBusy ? 'Adding…' : 'Add project'}
+          </button>
+          <span style={{ fontSize: 12, color: manualMsg.startsWith('✓') ? 'var(--success)' : 'var(--magenta)' }}>{manualMsg}</span>
+        </div>
       </div>
     </div>
   );

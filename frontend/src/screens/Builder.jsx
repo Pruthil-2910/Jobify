@@ -118,6 +118,25 @@ export const Builder = ({ template, setTemplate, setRoute }) => {
   const [section, setSection] = React.useState('header');
   const [savedAt, setSavedAt] = React.useState(null);
   const [saving, setSaving] = React.useState(false);
+  const [loadError, setLoadError] = React.useState('');
+
+  // Load saved resume on mount.
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await UsersAPI.getResume();
+        if (cancelled) return;
+        if (r && typeof r === 'object') {
+          setResume({ ...DEFAULT_RESUME, ...r });
+        }
+      } catch (e) {
+        // Silently use defaults — endpoint returns null for new users.
+        if (e?.status && e.status !== 404) setLoadError(e.message || 'Could not load resume');
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const update = (k, v) => setResume({ ...resume, [k]: v });
   const updateExp = (id, k, v) => setResume({ ...resume, experience: resume.experience.map(e => e.id === id ? { ...e, [k]: v } : e) });
@@ -129,7 +148,9 @@ export const Builder = ({ template, setTemplate, setRoute }) => {
     try {
       await UsersAPI.saveResume(resume);
       setSavedAt(new Date());
-    } catch {} finally { setSaving(false); }
+    } catch (e) {
+      setLoadError(e?.message || 'Save failed');
+    } finally { setSaving(false); }
   };
 
   const sections = [
@@ -161,7 +182,9 @@ export const Builder = ({ template, setTemplate, setRoute }) => {
           <button key={k} className={`btn btn-sm ${template === k ? 'btn-primary' : ''}`} onClick={() => setTemplate(k)}>{label}</button>
         ))}
         <div style={{ flex: 1 }} />
-        <span style={{ fontSize: 12, color: 'var(--star-400)' }}>{savedAt ? `Saved ${savedAt.toLocaleTimeString()}` : 'Unsaved'}</span>
+        <span style={{ fontSize: 12, color: loadError ? 'var(--magenta)' : 'var(--star-400)' }}>
+          {loadError ? `✗ ${loadError}` : (savedAt ? `Saved ${savedAt.toLocaleTimeString()}` : 'Unsaved')}
+        </span>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr 1.1fr', gap: 24 }} className="builder-grid">

@@ -119,29 +119,55 @@ JWT and `X-Gemini-API-Key` headers are auto-injected on every request.
 - **JWT (HS256)** auth + **bcrypt** password hashing + **Fernet** API-key encryption
 - **Pydantic v2** for all I/O validation
 
-### API Routes (17 total)
+### API Routes
 
-| Method | Path                    | Auth | Description                                |
-|--------|-------------------------|:----:|--------------------------------------------|
-| GET    | `/health`               |  –   | Liveness probe                             |
-| POST   | `/auth/register`        |  –   | Create account → `{access_token, user_id}`|
-| POST   | `/auth/login`           |  –   | Authenticate → token                       |
-| POST   | `/auth/set-api-key`     |  ✓   | Store Gemini key (Fernet-encrypted)        |
-| GET    | `/auth/validate-key`    |  –   | Probe Gemini `models/list`                 |
-| GET    | `/users/me`             |  ✓   | Current user                               |
-| PUT    | `/users/resume`         |  ✓   | Save resume + embed into `vec_users`       |
-| GET    | `/jobs/search`          |  ✓   | Search jobs (LIKE on title/description)    |
-| GET    | `/jobs/{id}`            |  ✓   | Job detail                                 |
-| POST   | `/jobs/fetch`           |  ✓   | Pull from Adzuna + embed into `vec_jobs`   |
-| POST   | `/chat/message`         |  ✓   | Agentic RAG chat (intent-routed)           |
-| POST   | `/jd/match`             |  ✓   | Top-3 project matches + gap analysis       |
-| POST   | `/jd/tailor`            |  ✓   | Full pipeline → tailored resume saved      |
-| GET    | `/jd/history`           |  ✓   | Past tailored resumes                      |
-| POST   | `/projects/ingest`      |  ✓   | Ingest GitHub/LinkedIn URLs                |
-| GET    | `/projects`             |  ✓   | List user projects                         |
-| DELETE | `/projects/{id}`        |  ✓   | Delete project                             |
+| Method | Path                       | Auth | Description                                                |
+|--------|----------------------------|:----:|------------------------------------------------------------|
+| GET    | `/health`                  |  –   | Liveness probe                                             |
+| POST   | `/auth/register`           |  –   | Create account → `{access_token, user_id}`                |
+| POST   | `/auth/login`              |  –   | Authenticate → token                                       |
+| POST   | `/auth/set-api-key`        |  ✓   | Store Gemini key (Fernet-encrypted)                        |
+| GET    | `/auth/validate-key`       |  –   | Probe Gemini `models/list`                                 |
+| GET    | `/users/me`                |  ✓   | Current user (flags only)                                  |
+| GET    | `/users/resume`            |  ✓   | Get saved resume JSON (or null)                            |
+| PUT    | `/users/resume`            |  ✓   | Save resume + embed into `vec_users`                       |
+| GET    | `/jobs/search`             |  ✓   | Filtered search (q, location, country, category, salary…)  |
+| GET    | `/jobs/match-feed`         |  ✓   | **Personalised feed** ranked by cosine similarity to resume |
+| GET    | `/jobs/{id}`               |  ✓   | Job detail                                                 |
+| POST   | `/jobs/fetch`              |  ✓   | Pull from Adzuna + embed into `vec_jobs`                   |
+| POST   | `/jobs/seed`               |  ✓   | Bulk-pull up to N jobs (idempotent)                        |
+| POST   | `/jobs/refresh-now`        |  ✓   | Trigger the daily refresh manually                         |
+| GET    | `/jobs/stats/summary`      |  ✓   | Per-country totals + vector coverage                       |
+| POST   | `/chat/message`            |  ✓   | Agentic RAG chat (intent-routed)                           |
+| POST   | `/jd/match`                |  ✓   | Top-3 project matches + gap analysis                       |
+| POST   | `/jd/tailor`               |  ✓   | Full pipeline → tailored resume saved                      |
+| GET    | `/jd/history`              |  ✓   | Past tailored resumes                                      |
+| POST   | `/projects/ingest`         |  ✓   | Ingest GitHub/LinkedIn URLs                                |
+| POST   | `/projects/manual`         |  ✓   | Add a hand-typed project (no URL)                          |
+| GET    | `/projects`                |  ✓   | List user projects                                         |
+| DELETE | `/projects/{id}`           |  ✓   | Delete project                                             |
 
 Interactive Swagger docs at `http://localhost:8000/docs` once running.
+
+### End-to-End Flow
+
+1. **Sign up** at `#/signup` → JWT stored in localStorage.
+2. Open `#/settings` and **save your Gemini API key** (validated against
+   Google's `models.list` endpoint, then Fernet-encrypted server-side).
+3. Open `#/builder` — fills with whatever you saved last via
+   `GET /users/resume`. Edit and click **Save** → `PUT /users/resume`
+   embeds the summary + skills + experience into `vec_users` (768-dim).
+4. Add evidence in `#/settings`: ingest GitHub repos / LinkedIn profiles,
+   or type projects manually. Each gets embedded into `vec_projects`.
+5. The job seeder runs automatically on first boot (last 60 days of
+   Indian listings, default ~5K rows). Configurable via
+   `JOB_SCHEDULER_*` env vars.
+6. `#/jobs` calls `GET /jobs/match-feed` — if the user has a resume
+   embedding, jobs are ranked by **real cosine similarity** with a
+   `match_pct` 0–100. Otherwise it falls back to recency-ordered search.
+7. `#/jobs/:id` triggers `POST /jd/tailor` which runs the full
+   LangGraph pipeline (embed JD → vector-match user projects → LLM
+   gap analysis → LLM resume rewrite → save).
 
 ---
 

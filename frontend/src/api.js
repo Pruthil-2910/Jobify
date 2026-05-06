@@ -64,22 +64,29 @@ export const AuthAPI = {
 
 export const UsersAPI = {
   getMe() { return api('/users/me'); },
+  /** GET /users/resume — returns saved resume JSON, or null. */
+  getResume() { return api('/users/resume'); },
   saveResume(resumeData) { return api('/users/resume', { method: 'PUT', body: JSON.stringify(resumeData) }); },
 };
 
 export const JobsAPI = {
   search(params = {}) {
     const qs = new URLSearchParams();
-    if (params.q)        qs.set('q', params.q);
-    if (params.location) qs.set('location', params.location);
-    if (params.limit)    qs.set('limit', params.limit);
-    if (params.offset)   qs.set('offset', params.offset);
+    for (const [k, v] of Object.entries(params)) if (v != null && v !== '') qs.set(k, v);
     return api(`/jobs/search?${qs.toString()}`);
+  },
+  /** Personalised feed ranked by cosine similarity to the user's resume embedding.
+   *  Returns { personalised: bool, results: [{ ..., match_pct?: int }] } */
+  matchFeed(params = {}) {
+    const qs = new URLSearchParams();
+    for (const [k, v] of Object.entries(params)) if (v != null && v !== '') qs.set(k, v);
+    return api(`/jobs/match-feed?${qs.toString()}`);
   },
   getById(id) { return api(`/jobs/${id}`); },
   fetchExternal(query, location, count = 20) {
     return api('/jobs/fetch', { method: 'POST', body: JSON.stringify({ query, location, results_per_page: count }) });
   },
+  stats() { return api('/jobs/stats/summary'); },
 };
 
 export const TailorAPI = {
@@ -94,6 +101,8 @@ export const ChatAPI = {
 
 export const ProjectsAPI = {
   ingest(urls) { return api('/projects/ingest', { method: 'POST', body: JSON.stringify({ urls }) }); },
+  /** Add a manually-typed project (no URL fetch). */
+  addManual(project) { return api('/projects/manual', { method: 'POST', body: JSON.stringify(project) }); },
   list() { return api('/projects'); },
   remove(id) { return api(`/projects/${id}`, { method: 'DELETE' }); },
 };
