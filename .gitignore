@@ -37,14 +37,6 @@ dist/
 .DS_Store
 Thumbs.db
 *.swp
-
-# --- Tooling artefacts (Claude Code, claude-flow, graphify) ---
-.claude/
-.claude-flow/
-.swarm/
-.mcp.json
-graphify-out/
-.graphify_*
 .needs_update
 
 # --- Uploads (runtime user data) ---

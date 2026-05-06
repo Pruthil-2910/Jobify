@@ -4,21 +4,6 @@
 
 ---
 
-## How this was built
-
-This project was built with **Claude (Anthropic) as a pair-programmer**. I chose
-the architecture and integration shape (FastAPI + SQLite + sqlite-vec for vector
-search, LangGraph for the chatbot RAG and JD-tailor pipelines, per-user
-encrypted Gemini keys, Vite + React on the frontend), wrote the spec in
-`docs/spec.md`, and used Claude to scaffold the modules and iterate on bugs.
-Decisions about scope, security boundaries, schema, and product behaviour are
-mine; the model accelerated the typing.
-
-If you're evaluating this for a role: I'm happy to walk through any module
-live, including the parts I'd implement differently next time (e.g. the Adzuna
-seeder is intentionally simple — production would use a queue + retry table
-instead of an in-process scheduler).
-
 ---
 
 ## Architecture
@@ -80,7 +65,6 @@ Jobify platform/
 │   └── tests/                      # pytest: 27 passing
 │
 ├── README.md                       # ← you are here
-└── CLAUDE.md
 ```
 
 ---
