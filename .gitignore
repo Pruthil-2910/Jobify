@@ -53,3 +53,8 @@ uploads/
 # --- Tests / smoke output ---
 smoke.db*
 jobify.db*
+
+# --- Stray screenshots / scratch images at repo root ---
+/image.png
+/Screenshot*.png
+/*.scratch.*
