@@ -39,6 +39,14 @@ Thumbs.db
 *.swp
 .needs_update
 
+# --- Claude Code / claude-flow / graphify local state ---
+.claude/
+.claude-flow/
+.swarm/
+.mcp.json
+graphify-out/
+.graphify_*
+
 # --- Uploads (runtime user data) ---
 uploads/
 
