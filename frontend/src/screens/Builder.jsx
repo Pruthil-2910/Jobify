@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon } from '../components/UI.jsx';
+import { AIRewriteButton, InsertLinkButton, ImportGitHubButton, TechChips } from '../components/BuilderTools.jsx';
 import { DEFAULT_RESUME } from '../mock.js';
 import { UsersAPI } from '../api.js';
 
@@ -52,6 +53,24 @@ export const ResumePreview = ({ resume, template = 'classic', compact = false })
             </div>
           ))}
         </Section>
+        {(r.projects && r.projects.length > 0) && (
+          <Section title="Projects" classic>
+            {r.projects.map(p => (
+              <div key={p.id || p.name} style={{ marginBottom: 8 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <strong>{p.name}{p.url ? ' · ' : ''}<span style={{ fontWeight: 400, fontSize: 10, color: '#5b3bd4' }}>{p.url ? new URL(p.url).hostname.replace(/^www\./, '') : ''}</span></strong>
+                  <span style={{ color: '#777', fontSize: 10 }}>{p.period || [p.start_date, p.end_date].filter(Boolean).join(' — ')}</span>
+                </div>
+                {p.description && <div style={{ marginTop: 2, color: '#333' }}>{p.description}</div>}
+                {(p.technologies || []).length > 0 && (
+                  <div style={{ marginTop: 2, fontSize: 10, fontStyle: 'italic', color: '#555' }}>
+                    {(p.technologies || []).slice(0, 6).join(' · ')}
+                  </div>
+                )}
+              </div>
+            ))}
+          </Section>
+        )}
         <Section title="Skills" classic>{r.skills.join(' · ')}</Section>
         <Section title="Education" classic>
           {r.education.map(e => (
@@ -82,12 +101,33 @@ export const ResumePreview = ({ resume, template = 'classic', compact = false })
           <Section title="Experience">
             {r.experience.map(e => (
               <div key={e.id} style={{ marginBottom: 14 }}>
-                <div style={{ fontWeight: 600 }}>{e.role}</div>
-                <div style={{ fontSize: 10, color: '#5b3bd4', marginBottom: 4 }}>{e.company} · {e.period}</div>
-                <ul style={{ margin: 0, paddingLeft: 14, color: '#333', fontSize: 10 }}>{e.bullets.map((b, i) => <li key={i}>{b}</li>)}</ul>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ fontWeight: 600 }}>{e.role}</span>
+                  <span style={{ fontSize: 10, color: '#777' }}>{e.period}</span>
+                </div>
+                <div style={{ fontSize: 10, color: '#5b3bd4', marginBottom: 4 }}>{e.company}</div>
+                <ul style={{ margin: 0, paddingLeft: 14, color: '#333', fontSize: 10 }}>{(e.bullets || []).map((b, i) => <li key={i}>{b}</li>)}</ul>
               </div>
             ))}
           </Section>
+          {(r.projects && r.projects.length > 0) && (
+            <Section title="Projects">
+              {r.projects.map(p => (
+                <div key={p.id || p.name} style={{ marginBottom: 10 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: 600 }}>{p.name}</span>
+                    <span style={{ fontSize: 10, color: '#777' }}>{p.period || [p.start_date, p.end_date].filter(Boolean).join(' — ')}</span>
+                  </div>
+                  {p.description && <div style={{ fontSize: 10, color: '#333', margin: '2px 0' }}>{p.description}</div>}
+                  {(p.technologies || []).length > 0 && (
+                    <div style={{ fontSize: 9, fontStyle: 'italic', color: '#5b3bd4' }}>
+                      {(p.technologies || []).slice(0, 6).join(' · ')}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </Section>
+          )}
         </div>
       </div>
     );
@@ -103,11 +143,33 @@ export const ResumePreview = ({ resume, template = 'classic', compact = false })
         <div style={{ fontFamily: 'var(--font-display)', fontSize: compact ? 16 : 20, color: '#5b3bd4', marginBottom: 8 }}>Experience</div>
         {r.experience.map(e => (
           <div key={e.id} style={{ marginBottom: 12 }}>
-            <div style={{ fontWeight: 600 }}>{e.role}</div>
-            <div style={{ fontSize: 10, color: '#5b3bd4', fontStyle: 'italic', marginBottom: 4 }}>{e.company} · {e.period}</div>
-            <ul style={{ margin: 0, paddingLeft: 14, color: '#333', fontSize: 10 }}>{e.bullets.map((b, i) => <li key={i}>{b}</li>)}</ul>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              <span style={{ fontWeight: 600 }}>{e.role}</span>
+              <span style={{ fontSize: 10, color: '#a238c9', fontStyle: 'italic' }}>{e.period}</span>
+            </div>
+            <div style={{ fontSize: 10, color: '#5b3bd4', fontStyle: 'italic', marginBottom: 4 }}>{e.company}</div>
+            <ul style={{ margin: 0, paddingLeft: 14, color: '#333', fontSize: 10 }}>{(e.bullets || []).map((b, i) => <li key={i}>{b}</li>)}</ul>
           </div>
         ))}
+        {(r.projects && r.projects.length > 0) && (
+          <>
+            <div style={{ fontFamily: 'var(--font-display)', fontSize: compact ? 16 : 20, color: '#5b3bd4', margin: '12px 0 8px' }}>Projects</div>
+            {r.projects.map(p => (
+              <div key={p.id || p.name} style={{ marginBottom: 10 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <span style={{ fontWeight: 600 }}>{p.name}</span>
+                  <span style={{ fontSize: 10, color: '#a238c9', fontStyle: 'italic' }}>{p.period || [p.start_date, p.end_date].filter(Boolean).join(' — ')}</span>
+                </div>
+                {p.description && <div style={{ fontSize: 10, color: '#333' }}>{p.description}</div>}
+                {(p.technologies || []).length > 0 && (
+                  <div style={{ fontSize: 9, fontStyle: 'italic', color: '#5b3bd4', marginTop: 2 }}>
+                    {(p.technologies || []).slice(0, 6).join(' · ')}
+                  </div>
+                )}
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );
@@ -139,9 +201,20 @@ export const Builder = ({ template, setTemplate, setRoute }) => {
   }, []);
 
   const update = (k, v) => setResume({ ...resume, [k]: v });
+
   const updateExp = (id, k, v) => setResume({ ...resume, experience: resume.experience.map(e => e.id === id ? { ...e, [k]: v } : e) });
   const addExp = () => setResume({ ...resume, experience: [...resume.experience, { id: Date.now(), role: '', company: '', period: '', bullets: [''] }] });
   const removeExp = (id) => setResume({ ...resume, experience: resume.experience.filter(e => e.id !== id) });
+
+  const projects = resume.projects || [];
+  const updateProj = (id, k, v) => setResume({ ...resume, projects: projects.map(p => p.id === id ? { ...p, [k]: v } : p) });
+  const addProj = () => setResume({ ...resume, projects: [...projects, { id: Date.now(), name: '', description: '', url: '', period: '', technologies: [], highlights: [] }] });
+  const removeProj = (id) => setResume({ ...resume, projects: projects.filter(p => p.id !== id) });
+
+  const education = resume.education || [];
+  const updateEdu = (id, k, v) => setResume({ ...resume, education: education.map(e => e.id === id ? { ...e, [k]: v } : e) });
+  const addEdu = () => setResume({ ...resume, education: [...education, { id: Date.now(), school: '', degree: '', period: '' }] });
+  const removeEdu = (id) => setResume({ ...resume, education: education.filter(e => e.id !== id) });
 
   const save = async () => {
     setSaving(true);
@@ -157,6 +230,7 @@ export const Builder = ({ template, setTemplate, setRoute }) => {
     ['header', 'Header', 'user'],
     ['summary', 'Summary', 'edit'],
     ['experience', 'Experience', 'briefcase'],
+    ['projects', 'Projects', 'file'],
     ['skills', 'Skills', 'sparkles'],
     ['education', 'Education', 'file'],
   ];
@@ -217,8 +291,14 @@ export const Builder = ({ template, setTemplate, setRoute }) => {
           )}
           {section === 'summary' && (
             <div>
-              <div className="eyebrow" style={{ marginBottom: 12 }}>SUMMARY</div>
-              <textarea className="input textarea" rows="6" value={resume.summary} onChange={(e) => update('summary', e.target.value)} style={{ resize: 'vertical' }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <div className="eyebrow">SUMMARY</div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <InsertLinkButton onInsert={(md) => update('summary', (resume.summary || '') + ' ' + md)} />
+                  <AIRewriteButton value={resume.summary} kind="summary" onResult={(t) => update('summary', t)} />
+                </div>
+              </div>
+              <textarea className="input textarea" rows="6" value={resume.summary || ''} onChange={(e) => update('summary', e.target.value)} style={{ resize: 'vertical' }} />
             </div>
           )}
           {section === 'experience' && (
@@ -235,11 +315,99 @@ export const Builder = ({ template, setTemplate, setRoute }) => {
                       {resume.experience.length > 1 && <button className="btn btn-sm btn-ghost" onClick={() => removeExp(e.id)}>Remove</button>}
                     </div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
-                      <input className="input" placeholder="Role" value={e.role} onChange={(ev) => updateExp(e.id, 'role', ev.target.value)} />
-                      <input className="input" placeholder="Company" value={e.company} onChange={(ev) => updateExp(e.id, 'company', ev.target.value)} />
+                      <input className="input" placeholder="Role" value={e.role || ''} onChange={(ev) => updateExp(e.id, 'role', ev.target.value)} />
+                      <input className="input" placeholder="Company" value={e.company || ''} onChange={(ev) => updateExp(e.id, 'company', ev.target.value)} />
                     </div>
-                    <input className="input" placeholder="Period" value={e.period} onChange={(ev) => updateExp(e.id, 'period', ev.target.value)} style={{ marginBottom: 8 }} />
-                    <textarea className="input textarea" rows="3" placeholder="One bullet per line" value={e.bullets.join('\n')} onChange={(ev) => updateExp(e.id, 'bullets', ev.target.value.split('\n'))} />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
+                      <input className="input" placeholder="Start (e.g. May 2024)" value={(e.period || '').split(/\s*[-–—]\s*/)[0] || ''}
+                        onChange={(ev) => {
+                          const end = (e.period || '').split(/\s*[-–—]\s*/)[1] || '';
+                          updateExp(e.id, 'period', `${ev.target.value}${end ? ' — ' + end : ''}`);
+                        }} />
+                      <input className="input" placeholder="End (e.g. Present)" value={(e.period || '').split(/\s*[-–—]\s*/)[1] || ''}
+                        onChange={(ev) => {
+                          const start = (e.period || '').split(/\s*[-–—]\s*/)[0] || '';
+                          updateExp(e.id, 'period', `${start}${ev.target.value ? ' — ' + ev.target.value : ''}`);
+                        }} />
+                    </div>
+                    <textarea className="input textarea" rows="3" placeholder="One bullet per line" value={(e.bullets || []).join('\n')} onChange={(ev) => updateExp(e.id, 'bullets', ev.target.value.split('\n'))} />
+                    <div style={{ display: 'flex', gap: 8, marginTop: 8, flexWrap: 'wrap' }}>
+                      {(e.bullets || []).filter(Boolean).map((b, bi) => (
+                        <AIRewriteButton key={bi} value={b} kind="bullet" label={`Rewrite bullet ${bi + 1}`}
+                          context={`${e.role || ''} at ${e.company || ''}`}
+                          onResult={(t) => {
+                            const next = [...(e.bullets || [])]; next[bi] = t;
+                            updateExp(e.id, 'bullets', next);
+                          }} />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+          {section === 'projects' && (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <div className="eyebrow">PROJECTS</div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <ImportGitHubButton onImported={(p) => setResume({
+                    ...resume,
+                    projects: [...(resume.projects || []), {
+                      id: Date.now(),
+                      name: p.name || '',
+                      description: p.description || '',
+                      url: p.url || '',
+                      period: [p.start_date, p.end_date].filter(Boolean).join(' — ') || '',
+                      start_date: p.start_date || '',
+                      end_date: p.end_date || '',
+                      technologies: p.technologies || [],
+                      highlights: p.highlights || [],
+                    }],
+                  })} />
+                  <button className="btn btn-sm" onClick={addProj}><Icon name="plus" size={12} /> Add project</button>
+                </div>
+              </div>
+              {projects.length === 0 && (
+                <div style={{ padding: 14, fontSize: 13, color: 'var(--star-400)', border: 'var(--border-hair)', borderRadius: 8 }}>
+                  No projects yet — click <strong>Import from GitHub</strong> to pull a repo's README and have Gemini extract the description, dates, and top tech, or add one manually.
+                </div>
+              )}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                {projects.map((p, idx) => (
+                  <div key={p.id} style={{ padding: 16, borderRadius: 12, border: 'var(--border-hair)', background: 'rgba(5,4,13,0.4)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                      <span className="mono" style={{ fontSize: 11, color: 'var(--star-400)' }}>PROJECT {idx + 1}</span>
+                      <button className="btn btn-sm btn-ghost" onClick={() => removeProj(p.id)}>Remove</button>
+                    </div>
+                    <input className="input" placeholder="Project name" value={p.name || ''} onChange={(ev) => updateProj(p.id, 'name', ev.target.value)} style={{ marginBottom: 8 }} />
+                    <input className="input" placeholder="https://github.com/... or live URL" value={p.url || ''} onChange={(ev) => updateProj(p.id, 'url', ev.target.value)} style={{ marginBottom: 8 }} />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
+                      <input className="input" placeholder="Start (e.g. May 2024)"
+                        value={(p.period || '').split(/\s*[-–—]\s*/)[0] || ''}
+                        onChange={(ev) => {
+                          const end = (p.period || '').split(/\s*[-–—]\s*/)[1] || '';
+                          updateProj(p.id, 'period', `${ev.target.value}${end ? ' — ' + end : ''}`);
+                        }} />
+                      <input className="input" placeholder="End (e.g. Jun 2024)"
+                        value={(p.period || '').split(/\s*[-–—]\s*/)[1] || ''}
+                        onChange={(ev) => {
+                          const start = (p.period || '').split(/\s*[-–—]\s*/)[0] || '';
+                          updateProj(p.id, 'period', `${start}${ev.target.value ? ' — ' + ev.target.value : ''}`);
+                        }} />
+                    </div>
+                    <textarea className="input textarea" rows="3" placeholder="What did you build? Lead with impact."
+                      value={p.description || ''} onChange={(ev) => updateProj(p.id, 'description', ev.target.value)} />
+                    <div style={{ display: 'flex', gap: 6, marginTop: 8, flexWrap: 'wrap' }}>
+                      <InsertLinkButton onInsert={(md) => updateProj(p.id, 'description', (p.description || '') + ' ' + md)} />
+                      <AIRewriteButton value={p.description} kind="project_description"
+                        context={`Project: ${p.name || ''}`} onResult={(t) => updateProj(p.id, 'description', t)} />
+                    </div>
+                    <input className="input" placeholder="Technologies (comma-separated, e.g. React, FastAPI, Postgres)"
+                      value={(p.technologies || []).join(', ')}
+                      onChange={(ev) => updateProj(p.id, 'technologies', ev.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+                      style={{ marginTop: 10 }} />
+                    <TechChips items={p.technologies} />
                   </div>
                 ))}
               </div>
@@ -256,14 +424,36 @@ export const Builder = ({ template, setTemplate, setRoute }) => {
           )}
           {section === 'education' && (
             <div>
-              <div className="eyebrow" style={{ marginBottom: 12 }}>EDUCATION</div>
-              {resume.education.map(ed => (
-                <div key={ed.id} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  <input className="input" placeholder="School" value={ed.school} onChange={(e) => setResume({ ...resume, education: resume.education.map(x => x.id === ed.id ? { ...x, school: e.target.value } : x) })} />
-                  <input className="input" placeholder="Degree" value={ed.degree} onChange={(e) => setResume({ ...resume, education: resume.education.map(x => x.id === ed.id ? { ...x, degree: e.target.value } : x) })} />
-                  <input className="input" placeholder="Period" value={ed.period} onChange={(e) => setResume({ ...resume, education: resume.education.map(x => x.id === ed.id ? { ...x, period: e.target.value } : x) })} />
-                </div>
-              ))}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                <div className="eyebrow">EDUCATION</div>
+                <button className="btn btn-sm" onClick={addEdu}><Icon name="plus" size={12} /> Add degree</button>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                {education.map((ed, idx) => (
+                  <div key={ed.id} style={{ padding: 16, borderRadius: 12, border: 'var(--border-hair)', background: 'rgba(5,4,13,0.4)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                      <span className="mono" style={{ fontSize: 11, color: 'var(--star-400)' }}>DEGREE {idx + 1}</span>
+                      {education.length > 1 && <button className="btn btn-sm btn-ghost" onClick={() => removeEdu(ed.id)}>Remove</button>}
+                    </div>
+                    <input className="input" placeholder="School / institution (e.g. IIT Bombay)" value={ed.school || ''} onChange={(e) => updateEdu(ed.id, 'school', e.target.value)} style={{ marginBottom: 8 }} />
+                    <input className="input" placeholder="Degree (e.g. M.S. Computer Science / B.Tech ECE)" value={ed.degree || ''} onChange={(e) => updateEdu(ed.id, 'degree', e.target.value)} style={{ marginBottom: 8 }} />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                      <input className="input" placeholder="Start (e.g. 2022)"
+                        value={(ed.period || '').split(/\s*[-–—]\s*/)[0] || ''}
+                        onChange={(e) => {
+                          const end = (ed.period || '').split(/\s*[-–—]\s*/)[1] || '';
+                          updateEdu(ed.id, 'period', `${e.target.value}${end ? ' — ' + end : ''}`);
+                        }} />
+                      <input className="input" placeholder="End (e.g. 2024)"
+                        value={(ed.period || '').split(/\s*[-–—]\s*/)[1] || ''}
+                        onChange={(e) => {
+                          const start = (ed.period || '').split(/\s*[-–—]\s*/)[0] || '';
+                          updateEdu(ed.id, 'period', `${start}${e.target.value ? ' — ' + e.target.value : ''}`);
+                        }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>

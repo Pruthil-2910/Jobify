@@ -42,6 +42,8 @@ class Project(BaseModel):
     name: Optional[str] = Field(default=None, description="Project name.")
     description: Optional[str] = Field(default=None, description="Short project description.")
     url: Optional[str] = Field(default=None, description="Link to project repo or demo.")
+    start_date: Optional[str] = Field(default=None, description="Start date (free-form, e.g. 'May 2024').")
+    end_date: Optional[str] = Field(default=None, description="End date (free-form, e.g. 'Jun 2024' or 'Present').")
     technologies: list[str] = Field(default_factory=list, description="Tech stack used.")
     highlights: list[str] = Field(default_factory=list, description="Notable achievements.")
 

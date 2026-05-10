@@ -13,6 +13,8 @@ const Jobs = ({ setRoute, setSelectedJob }) => {
   useScrollReveal();
 
   const [personalised, setPersonalised] = React.useState(false);
+  const [salaryBand, setSalaryBand] = React.useState(''); // e.g. '3-8'
+  const [sortBy, setSortBy] = React.useState('match');
 
   React.useEffect(() => {
     let cancelled = false;
@@ -38,7 +40,9 @@ const Jobs = ({ setRoute, setSelectedJob }) => {
             location: j.location || 'Remote',
             salary: j.salary_min && j.salary_max
               ? `₹${Math.round(j.salary_min / 100000)}L–₹${Math.round(j.salary_max / 100000)}L`
-              : 'Competitive',
+              : (j.salary_min ? `₹${Math.round(j.salary_min / 100000)}L+` : 'Competitive'),
+            salary_min: j.salary_min,
+            salary_max: j.salary_max,
             // Real cosine-similarity %, or null if not personalised.
             match: typeof j.match_pct === 'number' ? j.match_pct : null,
             tags: j.category ? [j.category] : (j.description ? j.description.split(/\s+/).slice(0, 3) : []),
@@ -47,6 +51,8 @@ const Jobs = ({ setRoute, setSelectedJob }) => {
             description: j.description,
             external_id: j.external_id,
             redirect_url: j.redirect_url,
+            contract_type: j.contract_type,
+            contract_time: j.contract_time,
           }));
           setJobs(mapped);
           setIsLive(true);
@@ -60,8 +66,36 @@ const Jobs = ({ setRoute, setSelectedJob }) => {
   const filtered = jobs.filter(j => {
     if (filter === 'high' && (j.match == null || j.match < 80)) return false;
     if (filter === 'remote' && !j.location.toLowerCase().includes('remote')) return false;
+    if (filter === 'fulltime' && !(j.contract_time || '').includes('full')) return false;
+    if (filter === 'contract' && !(j.contract_type || '').includes('contract')) return false;
+    if (filter === 'fresh' && !/^(just now|\dh ago|[1-7]d ago)/.test(j.time || '')) return false;
+    if (salaryBand) {
+      const [lo, hi] = salaryBand.split('-').map(s => s === 'null' ? null : Number(s));
+      // INR LPA — backend stores in INR, divide by 1e5 for LPA
+      const minLpa = (j.salary_min || 0) / 1e5;
+      const maxLpa = (j.salary_max || j.salary_min || 0) / 1e5;
+      if (lo != null && maxLpa < lo) return false;
+      if (hi != null && minLpa > hi) return false;
+    }
     if (query && !j.title.toLowerCase().includes(query.toLowerCase()) && !j.company.toLowerCase().includes(query.toLowerCase())) return false;
     return true;
+  }).sort((a, b) => {
+    if (sortBy === 'recent') {
+      // 'just now' < '4h ago' < '2d ago' — exploit lexical ordering of standardized strings
+      const score = t => {
+        if (!t) return 999999;
+        if (t === 'just now') return 0;
+        const m = /^(\d+)([hd])/.exec(t);
+        if (!m) return 999999;
+        return (m[2] === 'h' ? 1 : 24) * Number(m[1]);
+      };
+      return score(a.time) - score(b.time);
+    }
+    if (sortBy === 'salary') {
+      return (b.salary_max || b.salary_min || 0) - (a.salary_max || a.salary_min || 0);
+    }
+    // 'match' default — already in cosine order from match-feed; null matches go last.
+    return (b.match ?? -1) - (a.match ?? -1);
   });
 
   return (
@@ -113,11 +147,17 @@ const Jobs = ({ setRoute, setSelectedJob }) => {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
         {[
           ['all', 'All matches', jobs.length],
           ['high', '80%+ match', jobs.filter(j => j.match >= 80).length],
           ['remote', 'Remote', jobs.filter(j => j.location.toLowerCase().includes('remote')).length],
+          ['fulltime', 'Full-time', jobs.filter(j => (j.contract_time || '').includes('full')).length],
+          ['contract', 'Contract', jobs.filter(j => (j.contract_type || '').includes('contract')).length],
+          ['fresh', 'Last 7 days', jobs.filter(j => {
+            if (!j.time) return false;
+            return /^(just now|\dh ago|[1-7]d ago)/.test(j.time);
+          }).length],
         ].map(([k, label, n]) => (
           <Magnetic key={k} strength={0.18}>
             <button className={`btn btn-sm ${filter === k ? 'btn-primary' : ''}`} onClick={() => setFilter(k)}>
@@ -125,6 +165,28 @@ const Jobs = ({ setRoute, setSelectedJob }) => {
             </button>
           </Magnetic>
         ))}
+      </div>
+
+      <div style={{ display: 'flex', gap: 8, marginBottom: 32, flexWrap: 'wrap', alignItems: 'center' }}>
+        <span className="eyebrow" style={{ marginRight: 4 }}>SALARY (₹L/yr)</span>
+        {[[null, null, 'Any'], [3, 8, '3–8'], [8, 15, '8–15'], [15, 25, '15–25'], [25, null, '25+']].map(([lo, hi, label]) => {
+          const id = `${lo}-${hi}`;
+          const active = salaryBand === id;
+          return (
+            <button key={id} className={`btn btn-sm ${active ? 'btn-primary' : ''}`}
+              onClick={() => setSalaryBand(active ? '' : id)}>
+              {label}
+            </button>
+          );
+        })}
+        <span style={{ flex: 1 }} />
+        <span className="eyebrow">SORT</span>
+        <select value={sortBy} onChange={e => setSortBy(e.target.value)}
+          style={{ padding: '6px 10px', borderRadius: 6, fontSize: 12, fontFamily: 'var(--font-mono)' }}>
+          <option value="match">Best match</option>
+          <option value="recent">Most recent</option>
+          <option value="salary">Highest salary</option>
+        </select>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: 20 }}>

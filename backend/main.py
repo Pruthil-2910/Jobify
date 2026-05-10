@@ -32,7 +32,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import settings
 from db.schema import init_db
 from middleware.api_key import APIKeyMiddleware
-from routers import auth, chat, jd_match, jobs, projects, users
+from routers import ai, auth, chat, jd_match, jobs, projects, users
 
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL.upper(), logging.INFO),
@@ -109,6 +109,7 @@ def create_app() -> FastAPI:
     app.include_router(chat.router)
     app.include_router(jd_match.router)
     app.include_router(projects.router)
+    app.include_router(ai.router)
 
     @app.get("/health", tags=["system"])
     async def health() -> dict[str, str]:
