@@ -13,6 +13,7 @@ export default defineConfig({
       '/chat':     { target: 'http://localhost:8000', changeOrigin: true },
       '/jd':       { target: 'http://localhost:8000', changeOrigin: true },
       '/projects': { target: 'http://localhost:8000', changeOrigin: true },
+      '/ai':       { target: 'http://localhost:8000', changeOrigin: true },
       '/health':   { target: 'http://localhost:8000', changeOrigin: true },
     },
   },

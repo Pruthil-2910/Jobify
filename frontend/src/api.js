@@ -25,6 +25,12 @@ async function api(path, opts = {}) {
   if (!res.ok) {
     let detail = '';
     try { const j = await res.json(); detail = j.detail || j.error || JSON.stringify(j); } catch {}
+    // 401 from auth-required routes (not /auth/* itself) usually = expired JWT.
+    // Clear the dead token so the next page load lands on login instead of looping.
+    if (res.status === 401 && !path.startsWith('/auth/') && detail !== 'invalid_gemini_key') {
+      TokenStore.clear();
+      localStorage.removeItem('jobify_user_id');
+    }
     const err = new Error(detail || `HTTP ${res.status}`);
     err.status = res.status;
     throw err;

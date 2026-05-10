@@ -41,9 +41,18 @@ const JobDetail = ({ job, setRoute }) => {
 
   return (
     <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 48px 96px' }}>
-      <button className="btn btn-ghost btn-sm" onClick={() => setRoute('jobs')} style={{ marginBottom: 24 }}>
-        <Icon name="arrow-left" size={14} /> Back to jobs
-      </button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, gap: 12, flexWrap: 'wrap' }}>
+        <button className="btn btn-ghost btn-sm" onClick={() => setRoute('jobs')}>
+          <Icon name="arrow-left" size={14} /> Back to jobs
+        </button>
+        {j.redirect_url && (
+          <a className="btn btn-primary btn-sm"
+             href={j.redirect_url} target="_blank" rel="noopener noreferrer"
+             style={{ textDecoration: 'none' }}>
+            View on Adzuna <Icon name="arrow-right" size={14} />
+          </a>
+        )}
+      </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 32 }} className="detail-grid">
         <div className="panel" style={{ padding: 40 }}>
