@@ -11,11 +11,11 @@
 ```
 ┌──────────────────────────────┬──────────────────────────────┐
 │         FRONTEND             │           BACKEND            │
-│       (frontend/)            │       (backend/)      │
+│       (frontend/)            │       (backend/)             │
 │                              │                              │
 │  React 18 + Vite             │  FastAPI + Uvicorn           │
-│  ES module imports           │  SQLite + sqlite-vec (768d)  │
-│  Hash router                 │  LangGraph + Gemini          │
+│  Monochromatic Zinc UI       │  SQLite + sqlite-vec (768d)  │
+│  Kinetic Text & 3D Cards     │  LangGraph + Gemini          │
 │  Vite proxy → :8000          │  JWT + per-user Gemini key   │
 │                              │                              │
 │  npm run dev (port 5173)     │  uvicorn main:app (8000)     │
@@ -74,8 +74,11 @@ Jobify platform/
 ### Tech Stack
 - **React 18.3** with the `@vitejs/plugin-react` JSX transform
 - **Vite 5** dev server + production bundler
-- **Vanilla CSS** (design tokens) — no Tailwind, no CSS-in-JS framework
-- Custom hash router (`#/jobs`, `#/login`) — back/forward buttons work natively
+- **Monochromatic Zinc Design**: A high-end, professional minimalist aesthetic using pure zinc/black/white tones.
+- **Kinetic Typography**: Custom `SplitText` and `WordRotator` components for fluid, high-end motion.
+- **Vanilla CSS**: Optimized design tokens and glassmorphism — no Tailwind or CSS frameworks.
+- **Interactive 404 Experience**: 3D blog cards and creative ML-focused redirects for lost users.
+- **Custom hash router** (`#/jobs`, `#/login`) — back/forward buttons work natively
 
 ### Routing
 
@@ -204,7 +207,12 @@ copy .env.example .env           # Windows
 #   ADZUNA_APP_ID=<optional — needed for /jobs/fetch>
 #   ADZUNA_APP_KEY=<optional>
 
-# 4. Run
+# 4. Run (Activate venv first!)
+# Windows:
+.venv\Scripts\activate
+# macOS/Linux:
+# source .venv/bin/activate
+
 uvicorn main:app --workers 1 --reload --host 0.0.0.0 --port 8000
 ```
 
