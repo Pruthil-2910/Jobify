@@ -29,7 +29,7 @@ const Landing = ({ setRoute, heroAnim }) => {
             <span className="dot" />
             AVAILABLE NOW · {time} IST · AI RESUME OS
           </div>
-          <h1 className="hero-display" style={{ fontSize: 'clamp(56px, 9vw, 132px)', margin: 0, marginBottom: 28 }} data-cursor="explore">
+          <h1 className="hero-display" style={{ fontSize: 'clamp(56px, 9vw, 132px)', margin: 0, marginBottom: 28, color: 'var(--star-100)' }} data-cursor="explore">
             <SplitText text="LAND THE" delayStart={0.1} stagger={0.04} />
             <br />
             <span className="ital"><SplitText text="job" delayStart={0.5} stagger={0.04} /></span>
@@ -78,7 +78,7 @@ const Landing = ({ setRoute, heroAnim }) => {
       </div>
 
       <section style={{ maxWidth: 1280, margin: '0 auto', padding: '120px 48px' }}>
-        <div className="section-num"><span className="pill">02</span> HOW IT ORBITS</div>
+        <div className="section-num"><span className="pill">02</span> HOW IT WORKS</div>
         <h2 className="hero-display" style={{ fontSize: 'clamp(40px, 5vw, 72px)', marginBottom: 64, maxWidth: 900 }}>
           <ScrollSplit text="From profile to perfect-fit." />
           <br />
@@ -94,8 +94,8 @@ const Landing = ({ setRoute, heroAnim }) => {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
                 <div className="mono" style={{ fontSize: 14, color: 'var(--star-400)' }}>{s.n}</div>
                 <div style={{ width: 40, height: 40, borderRadius: 12,
-                  background: 'rgba(91,59,212,0.18)', border: '1px solid rgba(91,59,212,0.35)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--nebula-cyan)' }}>
+                  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--star-100)' }}>
                   <Icon name={s.icon} size={20} />
                 </div>
               </div>
@@ -108,7 +108,7 @@ const Landing = ({ setRoute, heroAnim }) => {
 
       <section style={{ maxWidth: 1280, margin: '0 auto', padding: '0 48px 96px' }} data-reveal>
         <div className="panel" style={{ padding: '64px 48px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(76,195,255,0.18), transparent 60%)' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.05), transparent 60%)' }} />
           <div style={{ position: 'relative' }}>
             <div className="section-num" style={{ justifyContent: 'center', marginBottom: 16 }}><span className="pill">03</span> READY?</div>
             <h2 className="hero-display" style={{ fontSize: 'clamp(40px, 6vw, 84px)', margin: '0 0 20px' }}>
@@ -117,7 +117,7 @@ const Landing = ({ setRoute, heroAnim }) => {
             <p style={{ marginBottom: 32, fontSize: 16, maxWidth: 520, marginInline: 'auto' }}>Start free. No credit card. We won't pretend an AI knows you better than you do — we just help it sound like it does.</p>
             <Magnetic strength={0.25}>
               <button className="btn btn-primary btn-lg" onClick={() => setRoute('signup')}>
-                Begin your orbit <Icon name="rocket" size={16} />
+                Start building <Icon name="rocket" size={16} />
               </button>
             </Magnetic>
           </div>

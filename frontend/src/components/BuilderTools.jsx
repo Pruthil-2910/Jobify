@@ -78,8 +78,8 @@ export const TechChips = ({ items = [] }) => {
         <span key={i} style={{
           fontSize: 11, fontStyle: 'italic', color: 'var(--star-300)',
           padding: '2px 8px', borderRadius: 999,
-          border: '1px solid rgba(201,196,240,0.18)',
-          background: 'rgba(76,195,255,0.06)',
+          border: '1px solid rgba(228, 228, 231, 0.18)',
+          background: 'rgba(228, 228, 231, 0.06)',
         }}>{t}</span>
       ))}
     </div>

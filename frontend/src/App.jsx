@@ -1,7 +1,6 @@
 import React from 'react';
 import { Nav } from './components/UI.jsx';
 import { CustomCursor } from './components/MoncyFX.jsx';
-import { TweaksPanel, TweakSection, TweakRadio, useTweaks } from './components/TweaksPanel.jsx';
 
 import Landing from './screens/Landing.jsx';
 import { SignUp, Login } from './screens/Auth.jsx';
@@ -12,6 +11,7 @@ import { Builder, Preview } from './screens/Builder.jsx';
 import Profile from './screens/Profile.jsx';
 import Chat from './screens/Chat.jsx';
 import Settings from './screens/Settings.jsx';
+import NotFound from './screens/NotFound.jsx';
 
 import { AuthAPI, UsersAPI, HealthAPI } from './api.js';
 import { MOCK_JOBS } from './mock.js';
@@ -26,7 +26,8 @@ const HASH_TO_ROUTE = Object.fromEntries(Object.entries(ROUTE_TO_HASH).map(([k, 
 function useHashRouter() {
   const hashToRoute = () => {
     const hash = (window.location.hash || '#/').slice(1);
-    return HASH_TO_ROUTE[hash] || 'home';
+    if (!hash || hash === '/') return 'home';
+    return HASH_TO_ROUTE[hash] || 'notfound';
   };
   const [route, setRouteState] = React.useState(hashToRoute());
   React.useEffect(() => {
@@ -47,7 +48,8 @@ export default function App() {
   const [route, navigate] = useHashRouter();
   const [signedIn, setSignedIn] = React.useState(AuthAPI.isLoggedIn());
   const [selectedJob, setSelectedJob] = React.useState(null);
-  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [tweaks, setTweaks] = React.useState(TWEAK_DEFAULTS);
+  const setTweak = (key, value) => setTweaks(t => ({ ...t, [key]: value }));
   const [backendOnline, setBackendOnline] = React.useState(null);
 
   React.useEffect(() => { HealthAPI.check().then(setBackendOnline); }, []);
@@ -90,7 +92,8 @@ export default function App() {
       case 'profile':    return <Profile setRoute={setRoute} />;
       case 'chat':       return <Chat setRoute={setRoute} />;
       case 'settings':   return <Settings setRoute={setRoute} />;
-      default:           return <Landing setRoute={setRoute} heroAnim={tweaks.heroAnim} />;
+      case 'notfound':   return <NotFound setRoute={setRoute} />;
+      default:           return <NotFound setRoute={setRoute} />;
     }
   })();
 
@@ -120,31 +123,6 @@ export default function App() {
         signedIn={signedIn}
       />
       {screen}
-
-      <TweaksPanel title="Tweaks">
-        <TweakSection title="Theme">
-          <TweakRadio value={tweaks.theme} onChange={(v) => setTweak('theme', v)}
-            options={[['dark', 'Dark'], ['light', 'Light']]} />
-        </TweakSection>
-        <TweakSection title="Hero animation">
-          <TweakRadio value={tweaks.heroAnim} onChange={(v) => setTweak('heroAnim', v)}
-            options={[['rotate', 'Word morph'], ['type', 'Typewriter'], ['shine', 'Shine sweep']]} />
-        </TweakSection>
-        <TweakSection title="Resume template">
-          <TweakRadio value={tweaks.template} onChange={(v) => setTweak('template', v)}
-            options={[['classic', 'Classic'], ['modern', 'Modern'], ['creative', 'Creative']]} />
-        </TweakSection>
-        <TweakSection title="Quick jump">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
-            {[['home','Home'],['signup','Sign up'],['jobs','Jobs'],['jobDetail','Tailor'],['builder','Builder'],['preview','Resume'],['profile','Profile'],['chat','Chat'],['settings','Settings']].map(([r, l]) => (
-              <button key={r} className="btn btn-sm" onClick={() => {
-                if (r === 'jobDetail') setSelectedJob(MOCK_JOBS[0]);
-                setRoute(r);
-              }}>{l}</button>
-            ))}
-          </div>
-        </TweakSection>
-      </TweaksPanel>
     </div>
   );
 }

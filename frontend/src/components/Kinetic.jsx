@@ -47,5 +47,5 @@ export const Typewriter = ({ phrases, typeSpeed = 60, pauseAtEnd = 1400 }) => {
     }, deleting ? typeSpeed / 2 : typeSpeed);
     return () => clearTimeout(t);
   }, [text, deleting, phraseIdx, phrases, typeSpeed, pauseAtEnd]);
-  return (<span style={{ color: 'var(--nebula-cyan)' }}>{text}<span className="typing-cursor" /></span>);
+  return (<span style={{ color: 'var(--star-100)' }}>{text}<span className="typing-cursor" /></span>);
 };

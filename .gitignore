@@ -41,6 +41,7 @@ Thumbs.db
 
 # --- Claude Code / claude-flow / graphify local state ---
 .claude/
+.agent/
 .claude-flow/
 .swarm/
 .mcp.json

@@ -40,7 +40,7 @@ export const MatchRing = ({ pct = 80, size = 56 }) => {
   return (
     <div className="match-ring" style={{ width: size, height: size }}>
       <svg width={size} height={size}>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(201,196,240,0.15)" strokeWidth="3" />
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(228, 228, 231, 0.15)" strokeWidth="3" />
         <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="3" strokeLinecap="round"
           strokeDasharray={c} strokeDashoffset={offset}
           style={{ transition: 'stroke-dashoffset 0.8s var(--ease-orbit)', filter: `drop-shadow(0 0 6px ${color})` }} />
@@ -60,13 +60,13 @@ export const Nav = ({ current, setRoute, theme, setTheme, signedIn }) => {
         <svg className="glyph" viewBox="0 0 32 32" fill="none">
           <defs>
             <linearGradient id="brand-grad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#1e63ff" />
-              <stop offset="100%" stopColor="#4cc3ff" />
+              <stop offset="0%" stopColor="#fafafa" />
+              <stop offset="100%" stopColor="#a1a1aa" />
             </linearGradient>
           </defs>
           <circle cx="16" cy="16" r="11" fill="none" stroke="url(#brand-grad)" strokeWidth="1.5" />
           <circle cx="16" cy="16" r="5" fill="url(#brand-grad)" />
-          <circle cx="27" cy="16" r="2" fill="#4cc3ff" />
+          <circle cx="27" cy="16" r="2" fill="#a1a1aa" />
         </svg>
         <span>Jobify</span>
       </button>
@@ -83,7 +83,7 @@ export const Nav = ({ current, setRoute, theme, setTheme, signedIn }) => {
           <>
             <button className="icon-btn" onClick={() => setRoute('settings')} title="Settings"><Icon name="edit" size={16} /></button>
             <button className="icon-btn" onClick={() => setRoute('home')} title="Sign out"><Icon name="logout" size={16} /></button>
-            <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #1e63ff, #4cc3ff)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 600, fontSize: 13 }}>RP</div>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #3f3f46, #18181b)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 600, fontSize: 13 }}>RP</div>
           </>
         ) : (
           <>

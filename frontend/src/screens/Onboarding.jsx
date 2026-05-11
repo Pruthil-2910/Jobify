@@ -44,7 +44,7 @@ const Onboarding = ({ setRoute }) => {
             return (
               <button key={s}
                 className={`tag-chip ${on ? 'match-high' : ''}`}
-                style={{ cursor: 'pointer', border: on ? undefined : '1px solid rgba(201,196,240,0.22)', background: on ? undefined : 'transparent', color: on ? undefined : 'var(--star-300)' }}
+                style={{ cursor: 'pointer', border: on ? undefined : '1px solid rgba(228, 228, 231, 0.22)', background: on ? undefined : 'transparent', color: on ? undefined : 'var(--star-300)' }}
                 onClick={() => setData({ ...data, skills: on ? data.skills.filter(x => x !== s) : [...data.skills, s] })}>
                 {on && <Icon name="check" size={12} />} {s}
               </button>

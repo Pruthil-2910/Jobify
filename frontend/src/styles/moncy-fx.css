@@ -12,7 +12,7 @@
 .moncy-mode .hero-display .ital {
   font-style: italic;
   font-weight: 400;
-  color: var(--nebula-cyan);
+  color: var(--star-100);
 }
 .moncy-mode .hero-display .spaced { letter-spacing: 0.08em; font-weight: 400; }
 
@@ -24,7 +24,7 @@
   padding: 6px 12px; border: var(--border-hair); border-radius: 999px;
   background: rgba(5,4,13,0.4);
 }
-.moncy-eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--nebula-cyan); box-shadow: 0 0 10px var(--nebula-cyan); animation: pulse-dot 2s ease-in-out infinite; }
+.moncy-eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--star-100); box-shadow: 0 0 10px rgba(255,255,255,0.3); animation: pulse-dot 2s ease-in-out infinite; }
 @keyframes pulse-dot { 50% { opacity: 0.4; } }
 
 /* Awwwards-style award marquee */
@@ -42,7 +42,7 @@
   font-family: var(--font-display); font-style: italic; font-size: 30px;
   color: var(--star-200); font-weight: 400;
 }
-.award-item .star { color: var(--nebula-cyan); font-size: 18px; font-style: normal; }
+.award-item .star { color: var(--star-400); font-size: 18px; font-style: normal; }
 @keyframes award-scroll { to { transform: translateX(-50%); } }
 
 /* Hero 3D canvas stage */
@@ -65,7 +65,7 @@
   pointer-events: none;
 }
 .hero3d-tag-tl { top: 8%; left: 0; }
-.hero3d-tag-br { bottom: 8%; right: 0; color: var(--nebula-cyan); border-color: rgba(76,195,255,0.35); }
+.hero3d-tag-br { bottom: 8%; right: 0; color: var(--star-200); border-color: rgba(255,255,255,0.2); }
 
 /* Scroll-char split (entrance via IntersectionObserver) */
 .scroll-char {
@@ -112,7 +112,7 @@
   white-space: nowrap;
   color: var(--star-300);
 }
-.jobs-banner-track .sep { color: var(--nebula-cyan); }
+.jobs-banner-track .sep { color: var(--star-400); }
 
 /* Section number eyebrow */
 .section-num {
@@ -178,7 +178,7 @@ body.moncy-cursor-on textarea { cursor: text; }
   text-transform: uppercase;
   color: #ffffff;
   padding: 6px 10px; border-radius: 999px;
-  background: rgba(20,30,80,0.85);
+  background: rgba(18,18,22,0.9);
   backdrop-filter: blur(6px);
   transform: translate(20px, 20px) scale(0.85);
   opacity: 0;
@@ -228,6 +228,8 @@ body.moncy-cursor-on textarea { cursor: text; }
 
 /* SplitText chars get hover-grow too (so SplitText + magnetic compose) */
 .split-char {
+  display: inline-block;
+  animation: char-pop 0.6s var(--ease-orbit) both;
   transition: transform 0.4s cubic-bezier(0.2,0.8,0.2,1),
               color 0.3s cubic-bezier(0.2,0.8,0.2,1);
 }

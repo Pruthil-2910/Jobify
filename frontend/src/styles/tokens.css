@@ -4,40 +4,39 @@
    ============================================================ */
 
 /* ---------- Fonts ---------- */
-/* Display: Fraunces substituted → Instrument Serif (Google Fonts)
-   — wide, slightly condensed modern serif with astronomical feel.
+/* Display: Inter (Google Fonts)
+   — clean, minimal, professional.
    UI:      Inter (Google Fonts) — neutral, high legibility.
    Mono:    JetBrains Mono (Google Fonts) — telemetry/stat readouts.
-   NOTE: served from Google Fonts CDN. If offline bundling is required,
-         swap to the matching .woff2 files in /fonts. */
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+   NOTE: served from Google Fonts CDN. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
   /* ============ CORE PALETTE ============ */
   /* Void — primary backgrounds (deepest space) */
-  --void-900: #05040d;          /* true black-violet, behind nebula */
-  --void-800: #0a0818;          /* panel base */
-  --void-700: #12102a;          /* raised surface */
-  --void-600: #1c1940;          /* hover surface */
+  --void-900: #09090b;          /* true black/zinc-950 */
+  --void-800: #18181b;          /* panel base / zinc-900 */
+  --void-700: #27272a;          /* raised surface / zinc-800 */
+  --void-600: #3f3f46;          /* hover surface / zinc-700 */
 
   /* Nebula — accent/brand (hero backgrounds, glows) */
-  --nebula-violet:  #5b3bd4;    /* deep indigo-violet core */
-  --nebula-magenta: #a238c9;    /* magenta cloud */
-  --nebula-cyan:    #4cc3ff;    /* ionized cyan edge */
-  --nebula-rose:    #ff6fae;    /* hot pink wisp */
+  --nebula-violet:  #fafafa;    /* zinc-50 */
+  --nebula-magenta: #e4e4e7;    /* zinc-200 */
+  --nebula-cyan:    #ffffff;    /* bright white pop */
+  --nebula-rose:    #d4d4d8;    /* zinc-300 accent */
 
   /* Stellar — foregrounds / luminescence */
   --star-100: #ffffff;          /* brightest star / hot text */
-  --star-200: #f5f3ff;          /* primary fg */
-  --star-300: #c9c4f0;          /* secondary fg */
-  --star-400: #8e88b8;          /* tertiary fg / muted */
-  --star-500: #5b567f;          /* disabled / hint */
-  --star-600: #32304d;          /* divider on dark */
+  --star-200: #fafafa;          /* zinc-50 */
+  --star-300: #e4e4e7;          /* zinc-200 */
+  --star-400: #a1a1aa;          /* zinc-400 */
+  --star-500: #71717a;          /* zinc-500 */
+  --star-600: #52525b;          /* zinc-600 */
 
   /* Player Pieces */
-  --moon-core:    #f2edff;      /* silvery white core */
-  --moon-crater:  #bdb6d6;      /* crater shadow */
-  --moon-glow:    #c0d4ff;      /* cool halo */
+  --moon-core:    #fafafa;      /* silvery white core */
+  --moon-crater:  #d4d4d8;      /* crater shadow */
+  --moon-glow:    #e4e4e7;      /* cool halo */
 
   --jupiter-band-1: #d97434;    /* orange band */
   --jupiter-band-2: #a63a1e;    /* deep red band */
@@ -58,7 +57,7 @@
   --info:    var(--nebula-cyan);
 
   /* ============ TYPOGRAPHY ============ */
-  --font-display: 'Instrument Serif', 'Fraunces', Cambria, serif;
+  --font-display: 'Inter', -apple-system, sans-serif;
   --font-ui:      'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono:    'JetBrains Mono', 'SF Mono', Menlo, monospace;
 
@@ -77,8 +76,8 @@
   --lh-snug:  1.2;
   --lh-body:  1.55;
 
-  --ls-display: -0.02em;  /* tighten serif display */
-  --ls-tag:     0.22em;   /* wide eyebrow */
+  --ls-display: -0.02em;  /* tighten display */
+  --ls-tag:     0.1em;    /* wider eyebrow */
 
   /* ============ SPACING ============ */
   --space-1:  4px;
@@ -111,7 +110,7 @@
 
   /* Inner depth (embedded panels) */
   --inset-panel: inset 0 1px 0 rgba(255,255,255,0.05),
-                 inset 0 0 0 1px rgba(201,196,240,0.08);
+                 inset 0 0 0 1px rgba(228, 228, 231, 0.08);
 
   /* Glows — the signature effect */
   --glow-moon:    0 0 18px rgba(192, 212, 255, 0.55), 0 0 36px rgba(192, 212, 255, 0.25);
@@ -203,9 +202,9 @@ hr { border: 0; border-top: var(--border-hair); margin: var(--space-5) 0; }
 /* Utility: a reusable nebula background */
 .bg-nebula {
   background:
-    radial-gradient(ellipse 70% 50% at 15% 25%, rgba(162, 56, 201, 0.35) 0%, transparent 60%),
-    radial-gradient(ellipse 55% 45% at 80% 70%, rgba(91, 59, 212, 0.45) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 35% at 60% 20%, rgba(76, 195, 255, 0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 40% at 30% 80%, rgba(255, 111, 174, 0.12) 0%, transparent 60%),
-    linear-gradient(180deg, #05040d 0%, #0a0818 60%, #05040d 100%);
+    radial-gradient(ellipse 70% 50% at 15% 25%, rgba(255, 255, 255, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 45% at 80% 70%, rgba(255, 255, 255, 0.04) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 35% at 60% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 30% 80%, rgba(255, 255, 255, 0.01) 0%, transparent 60%),
+    linear-gradient(180deg, #09090b 0%, #18181b 60%, #09090b 100%);
 }

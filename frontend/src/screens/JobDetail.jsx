@@ -122,18 +122,18 @@ const JobDetail = ({ job, setRoute }) => {
 
               {phase === 'tailoring' && (
                 <div>
-                  <div style={{ height: 4, borderRadius: 2, background: 'rgba(201,196,240,0.12)', marginBottom: 24, overflow: 'hidden' }}>
+                  <div style={{ height: 4, borderRadius: 2, background: 'rgba(228, 228, 231, 0.12)', marginBottom: 24, overflow: 'hidden' }}>
                     <div style={{ width: `${progress}%`, height: '100%',
-                      background: 'linear-gradient(90deg, #1e63ff, #4cc3ff)',
+                      background: 'linear-gradient(90deg, #fafafa, #a1a1aa)',
                       transition: 'width 0.3s var(--ease-orbit)',
-                      boxShadow: '0 0 12px var(--nebula-cyan)' }} />
+                      boxShadow: '0 0 12px rgba(255, 255, 255, 0.2)' }} />
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                     {tailorSteps.map((s, i) => (
                       <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, opacity: s.done ? 1 : 0.5 }}>
                         <div style={{
                           width: 20, height: 20, borderRadius: '50%',
-                          border: '1px solid ' + (s.done ? 'var(--success)' : 'rgba(201,196,240,0.3)'),
+                          border: '1px solid ' + (s.done ? 'var(--success)' : 'rgba(228, 228, 231, 0.3)'),
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           background: s.done ? 'rgba(61,220,151,0.2)' : 'transparent', color: 'var(--success)',
                         }}>{s.done && <Icon name="check" size={12} />}</div>

@@ -76,105 +76,85 @@ export const useScrollReveal = () => {
 };
 
 export const Hero3D = () => {
-  const canvasRef = React.useRef(null);
-  const stateRef = React.useRef({ mx: 0.5, my: 0.5, sy: 0, t: 0 });
+  const ref = React.useRef(null);
   React.useEffect(() => {
-    const cvs = canvasRef.current;
-    if (!cvs) return;
-    const ctx = cvs.getContext('2d');
-    let raf;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const resize = () => {
-      const r = cvs.getBoundingClientRect();
-      cvs.width = r.width * dpr; cvs.height = r.height * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    resize();
-    window.addEventListener('resize', resize);
-    const N = 380;
-    const pts = [];
-    for (let i = 0; i < N; i++) {
-      const phi = Math.acos(1 - 2 * (i + 0.5) / N);
-      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-      pts.push({ x: Math.sin(phi) * Math.cos(theta), y: Math.sin(phi) * Math.sin(theta), z: Math.cos(phi) });
-    }
-    const onMove = (e) => {
-      const r = cvs.getBoundingClientRect();
-      stateRef.current.mx = (e.clientX - r.left) / r.width;
-      stateRef.current.my = (e.clientY - r.top) / r.height;
-    };
-    const onScroll = () => { stateRef.current.sy = window.scrollY; };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    const tick = () => {
-      const s = stateRef.current;
-      s.t += 0.005;
-      const r = cvs.getBoundingClientRect();
-      const cx = r.width / 2, cy = r.height / 2;
-      const radius = Math.min(r.width, r.height) * 0.36;
-      const targetRy = (s.mx - 0.5) * 1.6;
-      const targetRx = (s.my - 0.5) * 1.2 + s.sy * 0.0008;
-      s._rx = (s._rx ?? 0) + (targetRx - (s._rx ?? 0)) * 0.06;
-      s._ry = (s._ry ?? 0) + (targetRy - (s._ry ?? 0)) * 0.06;
-      const rx = s._rx, ry = s._ry + s.t * 0.25;
-      ctx.clearRect(0, 0, r.width, r.height);
-      const halo = ctx.createRadialGradient(cx, cy, radius * 0.2, cx, cy, radius * 1.6);
-      halo.addColorStop(0, 'rgba(76,195,255,0.18)');
-      halo.addColorStop(0.5, 'rgba(91,59,212,0.10)');
-      halo.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = halo;
-      ctx.fillRect(0, 0, r.width, r.height);
-      const core = ctx.createRadialGradient(cx - radius * 0.3, cy - radius * 0.3, 4, cx, cy, radius * 0.95);
-      core.addColorStop(0, 'rgba(255,255,255,0.16)');
-      core.addColorStop(0.55, 'rgba(91,59,212,0.10)');
-      core.addColorStop(1, 'rgba(10,8,24,0.6)');
-      ctx.fillStyle = core;
-      ctx.beginPath(); ctx.arc(cx, cy, radius * 0.95, 0, Math.PI * 2); ctx.fill();
-      ctx.strokeStyle = 'rgba(201,196,240,0.18)'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.arc(cx, cy, radius * 0.95, 0, Math.PI * 2); ctx.stroke();
-      const cosx = Math.cos(rx), sinx = Math.sin(rx);
-      const cosy = Math.cos(ry), siny = Math.sin(ry);
-      for (const p of pts) {
-        let x = p.x * cosy + p.z * siny;
-        let z = -p.x * siny + p.z * cosy;
-        let y = p.y * cosx - z * sinx;
-        z = p.y * sinx + z * cosx;
-        const persp = 1.5 / (1.5 - z);
-        const px = cx + x * radius * persp;
-        const py = cy + y * radius * persp;
-        const depth = (z + 1) / 2;
-        const sz = 0.6 + depth * 2.4;
-        const alpha = 0.25 + depth * 0.75;
-        const r2 = Math.round(76 + (255 - 76) * depth);
-        const g2 = Math.round(195 + (255 - 195) * depth);
-        const b2 = Math.round(255);
-        ctx.fillStyle = `rgba(${r2},${g2},${b2},${alpha})`;
-        ctx.beginPath(); ctx.arc(px, py, sz, 0, Math.PI * 2); ctx.fill();
+    const el = ref.current;
+    if (!el) return;
+    const onScroll = () => {
+      const sy = window.scrollY;
+      const rotX = Math.max(0, 20 - sy * 0.05);
+      const rotY = Math.max(0, -15 + sy * 0.03);
+      const scale = Math.min(1.05, 0.9 + sy * 0.0005);
+      const translateZ = sy * 0.15;
+      const opacity = Math.max(0.2, 1 - sy * 0.002);
+      el.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale}) translateZ(${translateZ}px)`;
+      if (el.querySelector('.mockup-glow')) {
+        el.querySelector('.mockup-glow').style.opacity = opacity;
       }
-      ctx.strokeStyle = 'rgba(76,195,255,0.35)';
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, radius * 1.18, radius * 0.32, ry * 0.6, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.strokeStyle = 'rgba(30,99,255,0.25)';
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, radius * 1.32, radius * 0.18, ry * 0.6 + 0.6, 0, Math.PI * 2);
-      ctx.stroke();
-      raf = requestAnimationFrame(tick);
     };
-    tick();
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('scroll', onScroll);
-    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
   return (
-    <div className="hero3d-stage">
-      <canvas ref={canvasRef} className="hero3d-canvas" />
-      <div className="hero3d-tag hero3d-tag-tl">[ R3F · CANVAS · LIVE ]</div>
-      <div className="hero3d-tag hero3d-tag-br">CURSOR + SCROLL REACTIVE</div>
+    <div className="hero3d-stage" style={{ position: 'relative', width: '100%', height: '100%', minHeight: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="mockup-glow" style={{ position: 'absolute', top: '20%', left: '10%', right: '10%', bottom: '20%', background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.1), transparent 70%)', filter: 'blur(60px)', zIndex: 0, transition: 'opacity 0.2s' }} />
+      <div ref={ref} className="product-mockup" style={{
+        position: 'relative',
+        zIndex: 1,
+        width: '100%',
+        height: '460px',
+        background: 'rgba(15, 23, 42, 0.4)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '24px',
+        boxShadow: '0 32px 64px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
+        backdropFilter: 'blur(20px)',
+        transformOrigin: 'center center',
+        transition: 'transform 0.1s ease-out',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden'
+      }}>
+        {/* Mockup Header */}
+        <div style={{ height: '40px', background: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', padding: '0 16px', gap: '8px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+          <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)' }} />
+          <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)' }} />
+          <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)' }} />
+          <div style={{ marginLeft: '16px', fontSize: '12px', color: 'rgba(255,255,255,0.4)', fontFamily: 'var(--font-mono)' }}>jobify-os / resume-builder</div>
+        </div>
+        {/* Mockup Body */}
+        <div style={{ flex: 1, padding: '24px', display: 'flex', gap: '24px' }}>
+          {/* Sidebar */}
+          <div style={{ width: '120px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ height: '24px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', width: '100%', marginBottom: '12px' }} />
+            <div style={{ height: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', width: '80%' }} />
+            <div style={{ height: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', width: '90%' }} />
+            <div style={{ height: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', width: '70%' }} />
+            <div style={{ height: '1px', background: 'rgba(255,255,255,0.05)', margin: '12px 0' }} />
+            <div style={{ height: '12px', background: 'rgba(255,255,255,0.15)', borderRadius: '4px', width: '85%', border: '1px solid rgba(255,255,255,0.2)' }} />
+          </div>
+          {/* Main Content */}
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+             <div style={{ height: '40px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px', width: '60%', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', padding: '0 16px' }}>
+                <div style={{ height: '8px', background: 'rgba(255,255,255,0.4)', borderRadius: '4px', width: '40%' }} />
+             </div>
+             <div style={{ flex: 1, background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden', display: 'flex', padding: '16px', gap: '16px' }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ height: '16px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', width: '50%' }} />
+                  <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', width: '100%' }} />
+                  <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', width: '90%' }} />
+                  <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', width: '95%' }} />
+                  <div style={{ height: '32px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', width: '100%', marginTop: 'auto' }} />
+                </div>
+                <div style={{ width: '100px', background: 'rgba(0,0,0,0.2)', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                  <div style={{ width: '48px', height: '48px', borderRadius: '50%', border: '4px solid rgba(255,255,255,0.1)', borderTopColor: '#ffffff', transform: 'rotate(45deg)' }} />
+                  <div style={{ fontSize: '10px', color: 'rgba(255,255,255,0.4)' }}>98% MATCH</div>
+                </div>
+             </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
