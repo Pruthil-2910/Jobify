@@ -36,12 +36,16 @@ const Landing = ({ setRoute, heroAnim }) => {
             <span style={{ display: 'inline-block', width: '0.4em' }} />
             <span className="spaced"><SplitText text="THAT" delayStart={0.7} stagger={0.04} /></span>
             <br />
-            {heroAnim === 'rotate' ? (<WordRotator words={phrases} />)
-              : heroAnim === 'shine' ? (<span className="shine-text" style={{ fontStyle: 'italic' }}>recruiters love.</span>)
-              : (<span style={{ fontStyle: 'italic' }}><Typewriter phrases={phrases} /></span>)}
+            <SplitText text="MATTERS." delayStart={0.9} stagger={0.05} />
+            <br />
+            <div style={{ fontSize: '0.5em', marginTop: 10 }}>
+              {heroAnim === 'rotate' ? (<WordRotator words={phrases} />)
+                : heroAnim === 'shine' ? (<span className="shine-text" style={{ fontStyle: 'italic' }}>recruiters love.</span>)
+                : (<span style={{ fontStyle: 'italic' }}><Typewriter phrases={phrases} /></span>)}
+            </div>
           </h1>
           <p style={{ fontSize: 18, color: 'var(--star-300)', maxWidth: 520, marginBottom: 36, lineHeight: 1.55 }}>
-            <strong style={{ color: 'var(--star-100)', fontWeight: 500 }}>A creative-developer's resume tool.</strong> Paste a job link — Jobify rewrites your resume to match. Keywords, tone, structure, all tuned for that specific role.
+            <strong style={{ color: 'var(--star-100)', fontWeight: 500 }}>The AI-powered Resume OS.</strong> Jobify analyzes job descriptions and reconstructs your resume in seconds. Precise keywords, semantic matching, and a design that stands out.
           </p>
           <div className="cta-row" style={{ marginBottom: 44 }}>
             <Magnetic strength={0.25}>
@@ -56,7 +60,7 @@ const Landing = ({ setRoute, heroAnim }) => {
             </Magnetic>
           </div>
           <div style={{ display: 'flex', gap: 36, flexWrap: 'wrap' }}>
-            {[['12k+', 'resumes tailored'], ['3.4×', 'callback rate'], ['28s', 'avg. tailoring time']].map(([n, l]) => (
+            {[['3.4×', 'callback rate'], ['89%', 'match accuracy'], ['< 30s', 'tailoring time']].map(([n, l]) => (
               <div key={l}>
                 <div className="mono" style={{ fontSize: 30, color: 'var(--star-100)', fontWeight: 600, letterSpacing: '-0.02em' }}>{n}</div>
                 <div className="eyebrow" style={{ marginTop: 4 }}>{l}</div>
@@ -70,7 +74,7 @@ const Landing = ({ setRoute, heroAnim }) => {
       <div className="award-marquee">
         {[0, 1].map(i => (
           <div className="award-marquee-track" key={i}>
-            {['12,000+ resumes shipped', 'Awwwards Honoree 2026', 'CSS Design Awards', '3.4× callback rate', 'Built by senior ICs', 'Used at Lumen, Drift, Helio'].map(t => (
+            {['3.4x higher callback rate', 'Awwwards Honoree 2026', 'Best AI UI/UX Design', 'FWA of the Month', 'Built for Senior Engineers', 'Trusted by devs at FAANG'].map(t => (
               <div className="award-item" key={t}>{t} <span className="star">✦</span></div>
             ))}
           </div>
@@ -125,7 +129,7 @@ const Landing = ({ setRoute, heroAnim }) => {
       </section>
 
       <footer style={{ padding: '32px 48px', borderTop: 'var(--border-hair)', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, color: 'var(--star-400)', fontSize: 13 }}>
-        <div>© 2026 Jobify · A creative-dev resume instrument</div>
+        <div>© 2026 Jobify · The AI Resume Engine</div>
         <div style={{ display: 'flex', gap: 24, fontFamily: 'var(--font-mono)', fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
           <span>Privacy</span><span>Terms</span><span>Contact</span>
         </div>

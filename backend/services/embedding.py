@@ -1,5 +1,5 @@
-"""Embedding service wrapping Google Gemini text-embedding-004.
-
+"""Embedding service wrapping Google Gemini gemini-embedding-2.
+    
 Uses the modern ``google-genai`` SDK (the legacy ``google.generativeai``
 package is deprecated as of 2025).
 
@@ -26,8 +26,8 @@ from tenacity import (
 )
 
 EMBEDDING_DIM: int = 768
-# google-genai uses the bare model name (no "models/" prefix).
-EMBEDDING_MODEL: str = "text-embedding-004"
+# gemini-embedding-2 is the latest multimodal model available in AI Studio.
+EMBEDDING_MODEL: str = "gemini-embedding-2"
 
 
 class InvalidAPIKeyError(Exception):
@@ -59,7 +59,10 @@ def _call_embed(text: str, gemini_key: str, task_type: str) -> Any:
     return client.models.embed_content(
         model=EMBEDDING_MODEL,
         contents=text,
-        config=genai_types.EmbedContentConfig(task_type=task_type),
+        config=genai_types.EmbedContentConfig(
+            task_type=task_type,
+            output_dimensionality=EMBEDDING_DIM
+        ),
     )
 
 
@@ -117,7 +120,7 @@ async def embed_text(
     gemini_key: str,
     task_type: str = "RETRIEVAL_DOCUMENT",
 ) -> list[float]:
-    """Embed a single piece of text via Gemini text-embedding-004.
+    """Embed a single piece of text via Gemini gemini-embedding-2.
 
     Args:
         text: Non-empty input text.

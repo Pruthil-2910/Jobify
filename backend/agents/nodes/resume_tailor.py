@@ -209,7 +209,7 @@ async def tailor_resume(state: JDMatchState) -> JDMatchState:
         return state
 
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
+        model="gemini-2.0-flash",
         google_api_key=gemini_key,
         temperature=0.2,
     )

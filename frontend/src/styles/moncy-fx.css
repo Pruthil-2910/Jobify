@@ -12,7 +12,34 @@
 .moncy-mode .hero-display .ital {
   font-style: italic;
   font-weight: 400;
-  color: var(--star-100);
+  display: inline-block;
+  vertical-align: baseline;
+  animation: job-drift 4s ease-in-out infinite;
+}
+
+.moncy-mode .hero-display .ital .split-char {
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(255,255,255,0.3);
+  background: linear-gradient(135deg, #ffffff 0%, #a1a1aa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  /* If background-clip fails, it shows white */
+  animation: char-pop 0.6s var(--ease-orbit) both, text-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes text-shimmer {
+  0%, 100% { opacity: 0.8; filter: brightness(1); }
+  50% { opacity: 1; filter: brightness(1.4) drop-shadow(0 0 8px rgba(255,255,255,0.4)); }
+}
+
+@keyframes text-shine {
+  from { background-position: 200% center; }
+  to { background-position: -200% center; }
+}
+
+@keyframes job-drift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(-2deg); }
 }
 .moncy-mode .hero-display .spaced { letter-spacing: 0.08em; font-weight: 400; }
 

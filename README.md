@@ -118,7 +118,7 @@ JWT and `X-Gemini-API-Key` headers are auto-injected on every request.
 - **FastAPI** + **Uvicorn** (single worker — SQLite is single-writer)
 - **SQLite** with **sqlite-vec** virtual tables (768-dim cosine search)
 - **LangGraph** orchestrating two graphs: chatbot RAG and JD matcher / resume tailor
-- **Google Gemini** — `gemini-1.5-flash` for LLM, `text-embedding-004` for embeddings
+- **Google Gemini** — `gemini-2.0-flash` for LLM, `gemini-embedding-2` for embeddings
 - **JWT (HS256)** auth + **bcrypt** password hashing + **Fernet** API-key encryption
 - **Pydantic v2** for all I/O validation
 

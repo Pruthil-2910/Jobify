@@ -202,7 +202,7 @@ export default function NotFound({ setRoute }) {
           margin: '0 auto 32px auto',
           lineHeight: 1.6
         }}>
-          Read these blogs of mine and you will definitely get lost in the world of ML.
+          Explore our deep dives while we get you back on track.
         </p>
         <button className="btn btn-primary" onClick={() => setRoute('home')} style={{
           padding: '12px 32px', fontSize: '16px', letterSpacing: '0.02em'

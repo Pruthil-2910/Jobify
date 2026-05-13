@@ -195,7 +195,7 @@ def test_live_gemini_smoke():
     from langchain_google_genai import ChatGoogleGenerativeAI
 
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
+        model="gemini-2.0-flash",
         google_api_key=os.environ["GEMINI_API_KEY"],
     )
     resp = llm.invoke("Reply with the single word: OK")
@@ -210,6 +210,6 @@ def test_stub_embed_text_fixture(stub_embed_text):
 
 
 def test_stub_chat_gemini_fixture(stub_chat_gemini):
-    llm = stub_chat_gemini(model="gemini-1.5-flash")
+    llm = stub_chat_gemini(model="gemini-2.0-flash")
     out = llm.invoke("anything")
     assert out.content == "stubbed-llm-response"

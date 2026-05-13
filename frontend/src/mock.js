@@ -10,20 +10,20 @@ export const MOCK_JOBS = [
 ];
 
 export const DEFAULT_RESUME = {
-  name: 'Riya Patel',
-  title: 'Senior Frontend Engineer',
-  email: 'riya@orbit.com',
-  phone: '+1 (415) 555-0142',
-  location: 'San Francisco, CA',
-  website: 'riya.studio',
-  summary: 'Frontend engineer with 7+ years building design-systems and accessible product UI. I care about taste, performance, and the people who use the things I build.',
+  name: 'Your Name',
+  title: 'Target Role Title',
+  email: 'your.email@example.com',
+  phone: '+1 555-0100',
+  location: 'City, Country',
+  website: 'portfolio.com',
+  summary: 'A brief, impactful summary of your career highlights and the value you bring to a team. Focus on outcomes and key competencies.',
   experience: [
-    { id: 1, role: 'Senior Frontend Engineer', company: 'Stellar Co.', period: '2023 — Now', bullets: ['Led the rewrite of the design system, cutting build time 60%.', 'Mentored 4 engineers; ran weekly craft reviews.', 'Shipped the new editor used by 80k weekly users.'] },
-    { id: 2, role: 'Frontend Engineer', company: 'Apogee', period: '2020 — 2023', bullets: ['Owned the marketing site rebuild — Core Web Vitals all green.', 'Built component library used across 6 product surfaces.'] },
+    { id: 1, role: 'Current Role', company: 'Current Company', period: '2022 — Present', bullets: ['Key achievement starting with an action verb.', 'Quantifiable impact (e.g. reduced latency by 40%).', 'Team leadership or cross-functional collaboration highlight.'] },
+    { id: 2, role: 'Previous Role', company: 'Previous Company', period: '2019 — 2022', bullets: ['Built a core product feature from 0 to 1.', 'Optimized internal workflows saving 10 hours/week.'] },
   ],
-  skills: ['React', 'TypeScript', 'Design Systems', 'Next.js', 'Accessibility', 'Figma', 'Node.js', 'GraphQL'],
+  skills: ['Core Skill 1', 'Skill 2', 'Skill 3', 'Framework A', 'Library B', 'Tool C'],
   education: [
-    { id: 1, school: 'UC Berkeley', degree: 'B.S. Computer Science', period: '2014 — 2018' },
+    { id: 1, school: 'University Name', degree: 'Degree Name', period: '2015 — 2019' },
   ],
 };
 

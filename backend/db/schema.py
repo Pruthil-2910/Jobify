@@ -1,7 +1,7 @@
 """Database schema initialization for Jobify backend.
 
 Creates relational tables and sqlite-vec virtual tables (768-dim embeddings,
-matching Google text-embedding-004).
+matching Google gemini-embedding-2).
 """
 from __future__ import annotations
 

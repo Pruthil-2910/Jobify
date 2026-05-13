@@ -1,6 +1,6 @@
 """LLM helpers for resume building: generic text rewrite + GitHub README extraction.
 
-Uses gemini-1.5-flash via langchain-google-genai. The user's per-request
+Uses gemini-2.0-flash via langchain-google-genai. The user's per-request
 Gemini key is required (read from request.state in the router).
 """
 from __future__ import annotations
@@ -55,7 +55,7 @@ async def rewrite_text(
     prompt_parts.append(f"\nText to rewrite:\n{text.strip()}")
 
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
+        model="gemini-2.0-flash",
         google_api_key=gemini_key,
         temperature=0.4,
     )
@@ -179,7 +179,7 @@ async def extract_github_project(*, url: str, gemini_key: str) -> dict[str, Any]
     )
 
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
+        model="gemini-2.0-flash",
         google_api_key=gemini_key,
         temperature=0.2,
     )

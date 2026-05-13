@@ -63,7 +63,7 @@ async def ingest_country(
     exhausted. Idempotent — re-running deduplicates on Adzuna ``external_id``.
 
     If ``embed=True`` and ``gemini_key`` is given, each new job's
-    ``title + company + description`` is embedded with text-embedding-004 and
+    ``title + company + description`` is embedded with gemini-embedding-2 and
     upserted into ``vec_jobs``. Embedding errors do not abort the run.
     """
     if embed and not gemini_key:

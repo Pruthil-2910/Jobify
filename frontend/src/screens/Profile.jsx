@@ -18,7 +18,7 @@ const Profile = ({ setRoute }) => {
     return () => { cancelled = true; };
   }, []);
 
-  const displayName = user ? user.email.split('@')[0].replace(/\./g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'Riya Patel';
+  const displayName = user ? user.email.split('@')[0].replace(/\./g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'New Explorer';
   const initials = displayName.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
   const displayJobs = history.length > 0
     ? history.slice(0, 4).map((h, i) => ({
@@ -34,8 +34,8 @@ const Profile = ({ setRoute }) => {
   const stats = [
     ['Resumes tailored', history.length > 0 ? `${history.length}` : '—', history.length > 0 ? 'from API' : 'no history yet', 'success'],
     ['Avg. match score', '87%', '↑ 12 pts', 'cyan'],
-    ['Applications sent', '24', 'across 18 cos.', 'star'],
-    ['Callback rate', '34%', '3.4× avg.', 'magenta'],
+    ['Jobs matched', '24', 'across 18 companies', 'star'],
+    ['Callback rate', '3.4x', 'Best in class', 'magenta'],
   ];
 
   return (
@@ -45,7 +45,7 @@ const Profile = ({ setRoute }) => {
         <h1 className="h-display" style={{ fontSize: 56, margin: 0 }}>
           Welcome back, <span style={{ fontStyle: 'italic', color: 'var(--nebula-cyan)' }}>{displayName.split(' ')[0]}.</span>
         </h1>
-        <p style={{ marginTop: 8 }}>Here's your trajectory this week.</p>
+        <p style={{ marginTop: 8 }}>Track your resume performance and match accuracy.</p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }} className="stat-grid">
@@ -99,7 +99,7 @@ const Profile = ({ setRoute }) => {
             }}>{initials}</div>
             <div style={{ fontFamily: 'var(--font-display)', fontSize: 24, color: 'var(--star-100)' }}>{displayName}</div>
             <div style={{ fontSize: 13, color: 'var(--star-400)', marginBottom: 16 }}>
-              {user ? user.email : 'Senior Frontend Engineer · SF'}
+              {user ? user.email : 'Design your career trajectory.'}
             </div>
             <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
               <button className="btn btn-sm" onClick={() => setRoute('builder')}><Icon name="edit" size={12} /> Edit</button>
